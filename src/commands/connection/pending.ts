@@ -17,7 +17,7 @@ export default class ConnectionPending extends BaseCommand {
     const client = await this.buildAuthenticatedClient();
 
     try {
-      const result = await runWorkflow(client.retrievePendingRequests, undefined as unknown as void, {
+      const result = await runWorkflow(client.retrievePendingRequests, {}, {
         isQuiet: flags.quiet,
       });
 

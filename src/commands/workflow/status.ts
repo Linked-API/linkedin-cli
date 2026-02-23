@@ -53,7 +53,10 @@ See https://linkedapi.io/docs/executing-workflows/ for details on workflow execu
 
         if (status === 'running') {
           formatOutput({
-            data: { workflowId: args.id, status: 'running' },
+            data: {
+              workflowId: args.id,
+              status: 'running',
+            },
             errors: [],
             isJson: flags.json,
             fields: flags.fields,

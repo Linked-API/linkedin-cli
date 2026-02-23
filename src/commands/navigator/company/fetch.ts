@@ -100,7 +100,7 @@ export default class NavigatorCompanyFetch extends BaseCommand {
     }
 
     try {
-      const result = await runWorkflow(client.nvFetchCompany, params as any, {
+      const result = await runWorkflow(client.nvFetchCompany, params, {
         isQuiet: flags.quiet,
       });
 

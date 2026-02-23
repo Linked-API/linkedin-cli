@@ -4,16 +4,17 @@ interface TWorkflowRunnerOptions {
   isQuiet: boolean;
 }
 
-export async function runWorkflow<TParams, TResult>(
-  operation: Operation<TParams, TResult>,
-  params: TParams,
+export async function runWorkflow<TResult>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  operation: Operation<any, TResult>,
+  params: Record<string, unknown>,
   options: TWorkflowRunnerOptions,
 ): Promise<TMappedResponse<TResult>> {
   if (!options.isQuiet) {
     process.stderr.write('Executing...\n');
   }
 
-  const workflowId = await (operation as Operation<unknown, TResult>).execute(params);
+  const workflowId = await operation.execute(params);
 
   if (!options.isQuiet) {
     process.stderr.write(`Workflow started: ${workflowId}\n`);
@@ -29,9 +30,10 @@ export async function runWorkflow<TParams, TResult>(
   return result;
 }
 
-export async function runVoidWorkflow<TParams>(
-  operation: Operation<TParams, unknown>,
-  params: TParams,
+export async function runVoidWorkflow(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  operation: Operation<any, unknown>,
+  params: Record<string, unknown>,
   options: TWorkflowRunnerOptions,
 ): Promise<TMappedResponse<unknown>> {
   return runWorkflow(operation, params, options);

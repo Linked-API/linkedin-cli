@@ -67,7 +67,7 @@ Available actions: https://linkedapi.io/docs/actions-overview/`;
     }
 
     try {
-      const result = await runWorkflow(client.customWorkflow, definition, {
+      const result = await runWorkflow(client.customWorkflow, definition as Record<string, unknown>, {
         isQuiet: flags.quiet,
       });
 

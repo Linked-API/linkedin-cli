@@ -75,7 +75,7 @@ export default class PostFetch extends BaseCommand {
     }
 
     try {
-      const result = await runWorkflow(client.fetchPost, params as any, {
+      const result = await runWorkflow(client.fetchPost, params, {
         isQuiet: flags.quiet,
       });
 

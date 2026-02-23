@@ -17,7 +17,7 @@ export default class StatsPerformance extends BaseCommand {
     const client = await this.buildAuthenticatedClient();
 
     try {
-      const result = await runWorkflow(client.retrievePerformance, undefined as unknown as void, {
+      const result = await runWorkflow(client.retrievePerformance, {}, {
         isQuiet: flags.quiet,
       });
 

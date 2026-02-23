@@ -119,7 +119,10 @@ export function readConfig(): { linkedApiToken: string; identificationToken: str
 }
 
 export function addAccount(account: TAccountEntry): void {
-  const config = readRawConfig() ?? { accounts: [], currentAccount: '' };
+  const config = readRawConfig() ?? {
+    accounts: [],
+    currentAccount: '',
+  };
 
   const existingIndex = config.accounts.findIndex(
     (existing) => existing.identificationToken === account.identificationToken,
@@ -170,7 +173,10 @@ export function removeAllAccounts(): number {
   }
 
   const count = config.accounts.length;
-  saveRawConfig({ accounts: [], currentAccount: '' });
+  saveRawConfig({
+    accounts: [],
+    currentAccount: '',
+  });
   return count;
 }
 

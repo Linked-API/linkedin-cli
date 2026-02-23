@@ -61,7 +61,10 @@ Get tokens at https://app.linkedapi.io\n`);
     let accountName = '';
 
     try {
-      const tempClient = buildClient({ linkedApiToken, identificationToken });
+      const tempClient = buildClient({
+        linkedApiToken,
+        identificationToken,
+      });
       const accountInfo = await tempClient.getAccountInfo();
       accountName = accountInfo.data?.name ?? '';
       process.stdout.write('OK\n');

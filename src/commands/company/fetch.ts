@@ -111,7 +111,7 @@ export default class CompanyFetch extends BaseCommand {
     }
 
     try {
-      const result = await runWorkflow(client.fetchCompany, params as any, {
+      const result = await runWorkflow(client.fetchCompany, params, {
         isQuiet: flags.quiet,
       });
 

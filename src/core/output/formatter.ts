@@ -16,8 +16,6 @@ interface TErrorEnvelope {
   };
 }
 
-type TOutputEnvelope = TSuccessEnvelope | TErrorEnvelope;
-
 export function formatOutput({
   data,
   errors,

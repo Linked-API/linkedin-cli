@@ -43,7 +43,7 @@ export default class PostReact extends BaseCommand {
     if (flags['company-url']) params.companyUrl = flags['company-url'];
 
     try {
-      const result = await runVoidWorkflow(client.reactToPost, params as any, {
+      const result = await runVoidWorkflow(client.reactToPost, params, {
         isQuiet: flags.quiet,
       });
 

@@ -83,7 +83,7 @@ export default class PostCreate extends BaseCommand {
     }
 
     try {
-      const result = await runWorkflow(client.createPost, params as any, {
+      const result = await runWorkflow(client.createPost, params, {
         isQuiet: flags.quiet,
       });
 

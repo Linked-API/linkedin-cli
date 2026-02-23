@@ -108,7 +108,7 @@ export default class PersonFetch extends BaseCommand {
     }
 
     try {
-      const result = await runWorkflow(client.fetchPerson, params as any, {
+      const result = await runWorkflow(client.fetchPerson, params, {
         isQuiet: flags.quiet,
       });
 

@@ -17,7 +17,7 @@ export default class StatsSsi extends BaseCommand {
     const client = await this.buildAuthenticatedClient();
 
     try {
-      const result = await runWorkflow(client.retrieveSSI, undefined as unknown as void, {
+      const result = await runWorkflow(client.retrieveSSI, {}, {
         isQuiet: flags.quiet,
       });
 

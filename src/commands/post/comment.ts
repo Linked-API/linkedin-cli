@@ -42,7 +42,7 @@ export default class PostComment extends BaseCommand {
     if (flags['company-url']) params.companyUrl = flags['company-url'];
 
     try {
-      const result = await runVoidWorkflow(client.commentOnPost, params as any, {
+      const result = await runVoidWorkflow(client.commentOnPost, params, {
         isQuiet: flags.quiet,
       });
 

@@ -42,7 +42,7 @@ export default class ConnectionSend extends BaseCommand {
     if (flags.email) params.email = flags.email;
 
     try {
-      const result = await runVoidWorkflow(client.sendConnectionRequest, params as any, {
+      const result = await runVoidWorkflow(client.sendConnectionRequest, params, {
         isQuiet: flags.quiet,
       });
 
