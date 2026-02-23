@@ -1,4 +1,4 @@
-import type { Operation, TMappedResponse } from 'linkedapi-node';
+import type { Operation, TMappedResponse } from '@linkedapi/node';
 
 interface TWorkflowRunnerOptions {
   isQuiet: boolean;

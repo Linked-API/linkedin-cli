@@ -1,4 +1,4 @@
-import { LinkedApiError, LinkedApiWorkflowTimeoutError } from 'linkedapi-node';
+import { LinkedApiError, LinkedApiWorkflowTimeoutError } from '@linkedapi/node';
 
 import { EXIT_CODE, TExitCode } from './exit-codes';
 

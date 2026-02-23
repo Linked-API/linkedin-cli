@@ -1,4 +1,4 @@
-import { TLinkedApiActionError } from 'linkedapi-node';
+import { TLinkedApiActionError } from '@linkedapi/node';
 
 import { isStdoutTty } from '@utils/tty';
 import { selectFields } from './field-selector';

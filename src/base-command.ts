@@ -1,5 +1,5 @@
 import { Command, Flags } from '@oclif/core';
-import LinkedApi, { LinkedApiError } from 'linkedapi-node';
+import LinkedApi, { LinkedApiError } from '@linkedapi/node';
 
 import { resolveAuthTokens } from '@core/auth/auth-manager';
 import { buildClient } from '@core/client/build-client';

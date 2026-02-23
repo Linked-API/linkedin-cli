@@ -1,4 +1,4 @@
-import LinkedApi from 'linkedapi-node';
+import LinkedApi from '@linkedapi/node';
 
 interface TClientTokens {
   linkedApiToken: string;

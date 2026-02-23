@@ -1,5 +1,5 @@
 {
-  "name": "linkedin-cli",
+  "name": "@linkedapi/linkedin-cli",
   "version": "1.0.1",
   "description": "AI-agent-friendly CLI for LinkedIn automation via Linked API",
   "author": "Linked API",
@@ -43,8 +43,8 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@oclif/core": "^4.2.10",
-    "linkedapi-node": "^1.2.15"
+    "@linkedapi/node": "^1.2.15",
+    "@oclif/core": "^4.2.10"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
