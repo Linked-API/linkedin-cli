@@ -1,0 +1,114 @@
+{
+  "name": "linkedin-cli",
+  "version": "1.0.0",
+  "description": "AI-agent-friendly CLI for LinkedIn automation via Linked API",
+  "author": "Linked API",
+  "license": "MIT",
+  "homepage": "https://linkedapi.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Linked-API/linkedin-cli"
+  },
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "linkedin": "./bin/run.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE",
+    "oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "tsc && tsc-alias && npm run manifest",
+    "clean": "rm -rf dist",
+    "dev": "tsc --watch",
+    "lint": "eslint src --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "manifest": "oclif manifest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run clean && npm run build",
+    "prepare": "husky",
+    "postpack": "rm -f oclif.manifest.json"
+  },
+  "keywords": [
+    "linkedin",
+    "cli",
+    "api",
+    "automation",
+    "linkedapi",
+    "ai-agent"
+  ],
+  "dependencies": {
+    "@oclif/core": "^4.2.10",
+    "linkedapi-node": "^1.2.15"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.2.5",
+    "@eslint/js": "^9.24.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^22.14.0",
+    "eslint": "^9.24.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-n": "^17.16.2",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "oclif": "^4.17.0",
+    "prettier": "^3.5.3",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.29.0"
+  },
+  "oclif": {
+    "bin": "linkedin",
+    "dirname": "linkedin-cli",
+    "commands": "./dist/commands",
+    "topicSeparator": " ",
+    "topics": {
+      "account": {
+        "description": "Manage connected LinkedIn accounts"
+      },
+      "person": {
+        "description": "Fetch and search LinkedIn profiles"
+      },
+      "company": {
+        "description": "Fetch and search LinkedIn companies"
+      },
+      "message": {
+        "description": "Send and retrieve LinkedIn messages"
+      },
+      "connection": {
+        "description": "Manage LinkedIn connections"
+      },
+      "post": {
+        "description": "Manage LinkedIn posts"
+      },
+      "stats": {
+        "description": "Retrieve LinkedIn statistics"
+      },
+      "navigator": {
+        "description": "Sales Navigator operations"
+      },
+      "navigator:person": {
+        "description": "Sales Navigator person operations"
+      },
+      "navigator:company": {
+        "description": "Sales Navigator company operations"
+      },
+      "navigator:message": {
+        "description": "Sales Navigator messaging"
+      },
+      "workflow": {
+        "description": "Execute custom workflows"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

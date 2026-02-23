@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "@base-command": ["src/base-command"],
+      "@core/*": ["src/core/*"],
+      "@utils/*": ["src/utils/*"]
+    },
+    "incremental": true,
+    "allowArbitraryExtensions": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
+  },
+  "exclude": ["**/node_modules/*", "**/build/*", "**/dist/*"],
+  "include": ["src/**/*"]
+}
