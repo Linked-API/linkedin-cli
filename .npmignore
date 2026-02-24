@@ -1,0 +1,12 @@
+src/
+node_modules/
+*.tsbuildinfo
+.env
+.env.local
+.DS_Store
+*.log
+.github/
+.husky/
+eslint.config.js
+tsconfig.json
+.gitignore

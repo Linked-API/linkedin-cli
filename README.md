@@ -1,3 +1,5 @@
+# linkedin-cli
+
 AI-agent-friendly CLI for LinkedIn automation via [Linked API](https://linkedapi.io).
 
 Give your AI agent full LinkedIn capabilities: send messages, fetch profiles, search people and companies, manage connections, create posts, react, comment – all through simple CLI commands with structured JSON output. Built for OpenClaw, Claude Code, Cursor, Codex, and any AI agent that can execute shell commands.
@@ -730,7 +732,7 @@ cat workflow.json | linkedin workflow run
 echo '{"actions":[...]}' | linkedin workflow run
 ```
 
-See [Custom Workflows](https://linkedapi.io/docs/custom-workflows) for the workflow JSON schema.
+See [Building Workflows](https://linkedapi.io/docs/building-workflows/) for the workflow JSON schema.
 
 #### `workflow status`
 
