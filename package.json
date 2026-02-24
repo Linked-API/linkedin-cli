@@ -1,7 +1,7 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.0.1",
-  "description": "AI-agent-friendly CLI for LinkedIn automation via Linked API",
+  "version": "1.0.2",
+  "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
   "homepage": "https://linkedapi.io",
