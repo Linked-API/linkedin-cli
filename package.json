@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@linkedapi/node": "^1.2.15",
+    "@linkedapi/node": "^1.2.16",
     "@oclif/core": "^4.2.10"
   },
   "devDependencies": {

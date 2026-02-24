@@ -902,6 +902,12 @@ linkedin person search --term "revops engineer" --json -q | jq '.data[].name'
 - [Node.js SDK](https://www.npmjs.com/package/@linkedapi/node)
 - [MCP Server](https://www.npmjs.com/package/@linkedapi/mcp)
 
+## Legal
+
+This project is maintained by [Linked API](https://linkedapi.io). The name "linkedin-cli" refers to the platform this tool is designed to work with, not to any affiliation or ownership.
+
+Linked API is not affiliated, associated, authorized, endorsed by, or in any way officially connected with LinkedIn Corporation. "LinkedIn" is a registered trademark of LinkedIn Corporation.
+
 ## License
 
 This project is licensed under the MIT – see the [LICENSE](https://github.com/Linked-API/linkedin-cli/blob/main/LICENSE) file for details.

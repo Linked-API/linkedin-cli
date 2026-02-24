@@ -6,5 +6,8 @@ interface TClientTokens {
 }
 
 export function buildClient(tokens: TClientTokens): LinkedApi {
-  return new LinkedApi(tokens);
+  return new LinkedApi({
+    ...tokens,
+    client: 'cli'
+  });
 }
