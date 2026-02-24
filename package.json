@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "build": "tsc && tsc-alias && npm run manifest",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "dev": "tsc --watch",
     "lint": "eslint src --fix",
     "format": "prettier --write \"src/**/*.ts\"",
