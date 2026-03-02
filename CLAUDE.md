@@ -44,12 +44,8 @@ All imports MUST use aliases (not relative paths) when crossing module boundarie
 
 ## Code Style
 
-Follows the same conventions as `linkedapi-node` and `linkedapi-mcp`:
-- See root `CODESTYLE.md` for TypeScript conventions
-- Types prefixed with `T`, interfaces prefixed with `T`
-- `as const` objects over enums
-- Single export per file (with constant + derived type exception)
-- `Array<T>` syntax over `T[]`
+Follows the shared code style guide:
+- @../CODESTYLE.md — TypeScript code style and naming conventions
 
 ## Error Handling (Three Levels)
 
