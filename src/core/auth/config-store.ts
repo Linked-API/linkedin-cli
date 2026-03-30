@@ -225,6 +225,34 @@ export function findAccountByName(nameQuery: string): TAccountEntry | undefined 
   return config.accounts.find((account) => account.name.toLowerCase().includes(lowerQuery));
 }
 
+export function updateAccountTokens(
+  oldIdentificationToken: string,
+  newTokens: { name: string; linkedApiToken: string; identificationToken: string },
+): boolean {
+  const config = readRawConfig();
+
+  if (!config) {
+    return false;
+  }
+
+  const index = config.accounts.findIndex(
+    (account) => account.identificationToken === oldIdentificationToken,
+  );
+
+  if (index < 0) {
+    return false;
+  }
+
+  config.accounts[index] = newTokens;
+
+  if (config.currentAccount === oldIdentificationToken) {
+    config.currentAccount = newTokens.identificationToken;
+  }
+
+  saveRawConfig(config);
+  return true;
+}
+
 export function renameAccount(identificationToken: string, newName: string): boolean {
   const config = readRawConfig();
 

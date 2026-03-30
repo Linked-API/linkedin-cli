@@ -60,6 +60,15 @@ linkedin account list
 # Switch active account
 linkedin account switch "Vlad"
 
+# Update tokens for active account (e.g. after regenerating tokens on the dashboard)
+linkedin account update
+
+# Update tokens for a specific account
+linkedin account update "Vlad"
+
+# Non-interactive token update
+linkedin account update --linked-api-token=xxx --identification-token=yyy
+
 # Rename a saved account
 linkedin account rename "Vlad" --name "My Work Account"
 
@@ -771,6 +780,34 @@ linkedin account list
 ```
 
 The active account is marked with `*`.
+
+#### `account update`
+
+Update tokens for a saved account. Useful when your tokens were regenerated on the dashboard and you need to refresh them in the CLI.
+
+```bash
+linkedin account update [name] [flags]
+```
+
+| Arg | Required | Description |
+|-----|----------|-------------|
+| `name` | no | Account name (case-insensitive substring match). Defaults to active account. |
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--linked-api-token` | string | New Linked API Token (skips prompt) |
+| `--identification-token` | string | New Identification Token (skips prompt) |
+
+```bash
+# Update active account interactively
+linkedin account update
+
+# Update a specific account
+linkedin account update "Vlad"
+
+# Non-interactive (for scripts/CI)
+linkedin account update --linked-api-token=xxx --identification-token=yyy
+```
 
 #### `account switch`
 

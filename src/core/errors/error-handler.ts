@@ -7,6 +7,7 @@ interface TCliError {
   error: string;
   message: string;
   workflowId?: string;
+  hint?: string;
 }
 
 export function mapLinkedApiErrorToCliError(error: LinkedApiError): TCliError {
@@ -28,6 +29,7 @@ export function mapLinkedApiErrorToCliError(error: LinkedApiError): TCliError {
         exitCode: EXIT_CODE.AUTH,
         error: error.type,
         message: error.message,
+        hint: 'Run "linkedin account update" to refresh your tokens.',
       };
 
     case 'subscriptionRequired':
@@ -81,4 +83,8 @@ export function writeErrorToStderr(cliError: TCliError): void {
   }
 
   process.stderr.write(JSON.stringify(output) + '\n');
+
+  if (cliError.hint) {
+    process.stderr.write(`\n${cliError.hint}\n`);
+  }
 }
