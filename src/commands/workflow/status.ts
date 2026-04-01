@@ -51,11 +51,11 @@ See https://linkedapi.io/docs/executing-workflows/ for details on workflow execu
       } else {
         const status = await client.customWorkflow.status(args.id);
 
-        if (status === 'running') {
+        if (status === 'running' || status === 'pending') {
           formatOutput({
             data: {
               workflowId: args.id,
-              status: 'running',
+              status,
             },
             errors: [],
             isJson: flags.json,
