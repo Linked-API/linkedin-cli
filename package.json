@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@linkedapi/node": "^1.2.17",
+    "@linkedapi/node": "^1.2.18",
     "@oclif/core": "^4.2.10"
   },
   "devDependencies": {
@@ -105,6 +105,18 @@
       },
       "workflow": {
         "description": "Execute custom workflows"
+      },
+      "admin": {
+        "description": "Manage subscription, accounts, and limits"
+      },
+      "admin:subscription": {
+        "description": "Manage subscription and billing"
+      },
+      "admin:accounts": {
+        "description": "Manage connected LinkedIn accounts"
+      },
+      "admin:limits": {
+        "description": "Configure and monitor rate limits"
       }
     }
   },

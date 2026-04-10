@@ -16,6 +16,16 @@ To use this CLI, you need a Linked API account with a connected LinkedIn profile
 
 Learn more: https://linkedapi.io/docs/getting-started`;
 
+export function resolveAdminToken(): string {
+  const config = readConfig();
+
+  if (config) {
+    return config.linkedApiToken;
+  }
+
+  throw new Error(NO_TOKENS_MESSAGE);
+}
+
 export function resolveAuthTokens(accountOverride?: string): TAuthTokens {
   if (accountOverride) {
     const account = findAccountByName(accountOverride);

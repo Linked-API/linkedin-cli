@@ -48,6 +48,24 @@ export function mapLinkedApiErrorToCliError(error: LinkedApiError): TCliError {
         message: error.message,
       };
 
+    case 'accountNotFound':
+    case 'accountIdRequired':
+    case 'sessionNotFound':
+    case 'noAvailableSeats':
+    case 'dailyConnectionAttemptsExceeded':
+      return {
+        exitCode: EXIT_CODE.VALIDATION,
+        error: error.type,
+        message: error.message,
+      };
+
+    case 'tooManyRequests':
+      return {
+        exitCode: EXIT_CODE.RATE_LIMIT,
+        error: error.type,
+        message: error.message,
+      };
+
     case 'invalidRequestPayload':
     case 'invalidWorkflow':
       return {

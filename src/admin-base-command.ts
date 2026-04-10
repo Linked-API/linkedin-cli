@@ -1,0 +1,77 @@
+import { Command, Flags } from '@oclif/core';
+import { LinkedApiAdmin, LinkedApiError } from '@linkedapi/node';
+
+import { resolveAdminToken } from '@core/auth/auth-manager';
+import { buildAdminClient } from '@core/client/build-admin-client';
+import { mapLinkedApiErrorToCliError, writeErrorToStderr } from '@core/errors/error-handler';
+import { EXIT_CODE } from '@core/errors/exit-codes';
+
+export abstract class AdminBaseCommand extends Command {
+  static override baseFlags = {
+    json: Flags.boolean({
+      description: 'Output as JSON',
+      default: false,
+    }),
+    fields: Flags.string({
+      description: 'Comma-separated list of fields to include in output',
+    }),
+    quiet: Flags.boolean({
+      char: 'q',
+      description: 'Suppress progress output on stderr',
+      default: false,
+    }),
+    'no-color': Flags.boolean({
+      description: 'Disable colored output',
+      default: false,
+    }),
+  };
+
+  public override async init(): Promise<void> {
+    await super.init();
+    const { flags } = await this.parse(this.constructor as typeof AdminBaseCommand);
+
+    if (flags['no-color']) {
+      process.env.NO_COLOR = '1';
+    }
+  }
+
+  protected async buildAdminClient(): Promise<LinkedApiAdmin> {
+    try {
+      const linkedApiToken = resolveAdminToken();
+      return buildAdminClient(linkedApiToken);
+    } catch (error) {
+      if (error instanceof Error) {
+        process.stderr.write(error.message + '\n');
+      }
+
+      this.exit(EXIT_CODE.AUTH);
+      throw error;
+    }
+  }
+
+  protected handleError(error: unknown): never {
+    if (error instanceof LinkedApiError) {
+      const cliError = mapLinkedApiErrorToCliError(error);
+      writeErrorToStderr(cliError);
+      this.exit(cliError.exitCode);
+    }
+
+    if (error instanceof Error) {
+      writeErrorToStderr({
+        exitCode: EXIT_CODE.GENERAL,
+        error: 'unexpectedError',
+        message: error.message,
+      });
+      this.exit(EXIT_CODE.GENERAL);
+    }
+
+    writeErrorToStderr({
+      exitCode: EXIT_CODE.GENERAL,
+      error: 'unexpectedError',
+      message: 'An unexpected error occurred',
+    });
+    this.exit(EXIT_CODE.GENERAL);
+
+    throw error;
+  }
+}

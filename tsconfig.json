@@ -16,6 +16,7 @@
     "baseUrl": "./",
     "paths": {
       "@base-command": ["src/base-command"],
+      "@admin-base-command": ["src/admin-base-command"],
       "@core/*": ["src/core/*"],
       "@utils/*": ["src/utils/*"]
     },
