@@ -68,13 +68,6 @@ module.exports = defineConfig([
         },
       ],
 
-      "object-property-newline": [
-        "error",
-        {
-          allowAllPropertiesOnSameLine: false,
-        },
-      ],
-
       "implicit-arrow-linebreak": "off",
       "no-await-in-loop": "off",
       "class-methods-use-this": "off",
