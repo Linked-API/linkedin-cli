@@ -45,7 +45,7 @@ All imports MUST use aliases (not relative paths) when crossing module boundarie
 ## Code Style
 
 Follows the shared code style guide:
-- @../CODESTYLE.md — TypeScript code style and naming conventions
+- @../docs/CODESTYLE.md — TypeScript code style and naming conventions
 
 ## Error Handling (Three Levels)
 
