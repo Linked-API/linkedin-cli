@@ -4,7 +4,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## Product
 
-**linkedin-cli** is an AI-agent-friendly CLI for LinkedIn automation via [Linked API](https://linkedapi.io). It wraps the `linkedapi-node` SDK (v1.2.14) to give AI agents (Claude Code, Cursor, Codex, etc.) a token-efficient interface to control LinkedIn.
+**linkedin-cli** is an AI-agent-friendly CLI for LinkedIn automation via [Linked API](https://linkedapi.io). It wraps the `linkedapi-node` SDK (v2.0.0) to give AI agents (Claude Code, Cursor, Codex, etc.) a token-efficient interface to control LinkedIn.
 
 **Package:** `linkedin-cli` on npm, binary: `linkedin`
 **Framework:** oclif (TypeScript CLI framework by Salesforce)

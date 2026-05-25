@@ -746,6 +746,7 @@ See [Building Workflows](https://linkedapi.io/docs/building-workflows/) for the 
 #### `workflow status`
 
 Check status of a running workflow or wait for its completion.
+In-progress responses include `status` (`pending` or `running`) and `message`.
 
 ```bash
 linkedin workflow status <id> [flags]

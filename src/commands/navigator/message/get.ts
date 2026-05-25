@@ -2,6 +2,7 @@ import { Args, Flags } from '@oclif/core';
 
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
+import { workflowDetails } from '@core/workflow/workflow-details';
 
 export default class NavigatorMessageGet extends BaseCommand {
   static override description = 'Get Sales Navigator conversation messages';
@@ -61,11 +62,15 @@ export default class NavigatorMessageGet extends BaseCommand {
         process.stderr.write('Syncing conversation (first time, may take a moment)...\n');
       }
 
-      const workflowId = await client.nvSyncConversation.execute({
+      const workflow = await workflowDetails.executeWorkflowWithDetails(client.nvSyncConversation, {
         personUrl: args['person-url'],
       });
 
-      await client.nvSyncConversation.result(workflowId);
+      if (!flags.quiet && workflow.message) {
+        process.stderr.write(`${workflow.message}\n`);
+      }
+
+      await client.nvSyncConversation.result(workflow.workflowId);
 
       // Step 3: Poll again after sync
       const retryResult = await client.pollConversations([

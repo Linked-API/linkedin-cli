@@ -1,5 +1,7 @@
 import type { Operation, TMappedResponse } from '@linkedapi/node';
 
+import { workflowDetails } from './workflow-details';
+
 interface TWorkflowRunnerOptions {
   isQuiet: boolean;
 }
@@ -14,10 +16,15 @@ export async function runWorkflow<TResult>(
     process.stderr.write('Executing...\n');
   }
 
-  const workflowId = await operation.execute(params);
+  const workflow = await workflowDetails.executeWorkflowWithDetails(operation, params);
+  const { workflowId, workflowStatus, message } = workflow;
 
   if (!options.isQuiet) {
     process.stderr.write(`Workflow started: ${workflowId}\n`);
+    process.stderr.write(`Status: ${workflowStatus}\n`);
+    if (message) {
+      process.stderr.write(`${message}\n`);
+    }
     process.stderr.write('Waiting for result...\n');
   }
 

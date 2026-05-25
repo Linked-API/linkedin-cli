@@ -2,6 +2,7 @@ import { Args, Flags } from '@oclif/core';
 
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
+import { workflowDetails } from '@core/workflow/workflow-details';
 
 export default class WorkflowStatus extends BaseCommand {
   static override description = `Check status of a running workflow or wait for completion.
@@ -49,13 +50,14 @@ See https://linkedapi.io/docs/executing-workflows/ for details on workflow execu
           isQuiet: flags.quiet,
         });
       } else {
-        const status = await client.customWorkflow.status(args.id);
+        const status = await workflowDetails.getWorkflowStatusDetails(client.customWorkflow, args.id);
 
-        if (status === 'running' || status === 'pending') {
+        if (workflowDetails.isWorkflowInProgress(status)) {
           formatOutput({
             data: {
               workflowId: args.id,
-              status,
+              status: status.workflowStatus,
+              message: status.message,
             },
             errors: [],
             isJson: flags.json,
