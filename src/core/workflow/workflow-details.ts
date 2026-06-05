@@ -8,10 +8,12 @@ async function executeWorkflowWithDetails<TParams, TResult>(
   operation: Operation<TParams, TResult>,
   params: TParams,
 ): Promise<TWorkflowStartedDetails> {
-  const workflow = await operation.execute(params);
+  const workflowId = await operation.execute(params);
+
   return {
-    ...workflow,
-    message: workflow.message || '',
+    workflowId,
+    workflowStatus: 'pending',
+    message: '',
   };
 }
 
@@ -20,10 +22,10 @@ async function getWorkflowStatusDetails<TParams, TResult>(
   workflowId: string,
 ): Promise<TMappedResponse<TResult> | TWorkflowInProgressDetails> {
   const status = await operation.status(workflowId);
-  if (isWorkflowInProgress(status)) {
+  if (isWorkflowInProgressStatus(status)) {
     return {
-      ...status,
-      message: status.message || '',
+      workflowStatus: status,
+      message: '',
     };
   }
 
