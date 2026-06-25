@@ -770,6 +770,64 @@ linkedin workflow status abc123 --wait --json
 
 ---
 
+### Administration
+
+Admin commands use your Linked API Token and do not require an active LinkedIn account in the CLI.
+
+#### `admin subscription`
+
+Manage subscription status, seats, pricing, billing, and cancellation.
+
+```bash
+linkedin admin subscription status
+linkedin admin subscription seats
+linkedin admin subscription pricing
+linkedin admin subscription set-seats --quantity 5 --type plus --period year
+linkedin admin subscription billing-link
+linkedin admin subscription cancel
+```
+
+#### `admin accounts`
+
+Manage connected accounts and connection sessions.
+
+```bash
+linkedin admin accounts list
+linkedin admin accounts connect
+linkedin admin accounts reconnect <accountId>
+linkedin admin accounts reparse <accountId>
+linkedin admin accounts session <sessionId>
+linkedin admin accounts cancel-session <sessionId>
+linkedin admin accounts disconnect <accountId>
+linkedin admin accounts regenerate-token <accountId>
+```
+
+| Command | Description |
+|---------|-------------|
+| `list` | List connected accounts, pending sessions, and reconnection links |
+| `connect` | Create a connection session for a new LinkedIn account |
+| `reconnect` | Create a fresh reconnection session for an account requiring reconnection |
+| `reparse` | Refresh stored profile URL, avatar, headline, and name |
+| `session` | Get connection or reconnection session status |
+| `cancel-session` | Cancel a pending connection session |
+| `disconnect` | Disconnect an account |
+| `regenerate-token` | Regenerate an account identification token |
+
+#### `admin limits`
+
+Configure and inspect per-account action limits.
+
+```bash
+linkedin admin limits defaults
+linkedin admin limits get <accountId>
+linkedin admin limits usage <accountId>
+linkedin admin limits set <accountId> --category stMessages --period daily --max 25
+linkedin admin limits delete <accountId> --category stMessages --period daily
+linkedin admin limits reset <accountId>
+```
+
+---
+
 ### Account Management
 
 #### `account list`
