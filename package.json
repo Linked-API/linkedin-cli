@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@linkedapi/node": "^2.0.1",
+    "@linkedapi/node": "^2.0.4",
     "@oclif/core": "^4.2.10"
   },
   "devDependencies": {
@@ -78,6 +78,9 @@
       },
       "company": {
         "description": "Fetch and search LinkedIn companies"
+      },
+      "jobs": {
+        "description": "Fetch and search LinkedIn jobs"
       },
       "message": {
         "description": "Send and retrieve LinkedIn messages"
