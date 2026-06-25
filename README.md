@@ -776,15 +776,12 @@ Admin commands use your Linked API Token and do not require an active LinkedIn a
 
 #### `admin subscription`
 
-Manage subscription status, seats, pricing, billing, and cancellation.
+Manage subscription status and seats.
 
 ```bash
 linkedin admin subscription status
 linkedin admin subscription seats
-linkedin admin subscription pricing
 linkedin admin subscription set-seats --quantity 5 --type plus --period year
-linkedin admin subscription billing-link
-linkedin admin subscription cancel
 ```
 
 #### `admin accounts`

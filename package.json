@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -113,7 +113,7 @@
         "description": "Manage subscription, accounts, and limits"
       },
       "admin:subscription": {
-        "description": "Manage subscription and billing"
+        "description": "Manage subscription status and seats"
       },
       "admin:accounts": {
         "description": "Manage connected LinkedIn accounts"
