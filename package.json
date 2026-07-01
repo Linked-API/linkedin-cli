@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.0.17",
+  "version": "1.1.0",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@linkedapi/node": "^2.0.4",
+    "@linkedapi/node": "^2.1.0",
     "@oclif/core": "^4.2.10"
   },
   "devDependencies": {
@@ -120,6 +120,9 @@
       },
       "admin:limits": {
         "description": "Configure and monitor rate limits"
+      },
+      "admin:webhook": {
+        "description": "Manage the outbound event webhook and inspect deliveries"
       }
     }
   },
