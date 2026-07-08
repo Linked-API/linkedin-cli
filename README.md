@@ -368,6 +368,18 @@ linkedin connection pending
 linkedin connection pending --json
 ```
 
+#### `connection requests`
+
+List incoming connection requests.
+
+```bash
+linkedin connection requests
+```
+
+```bash
+linkedin connection requests --json
+```
+
 #### `connection withdraw`
 
 Withdraw a pending connection request.
@@ -387,6 +399,38 @@ linkedin connection withdraw <url> [flags]
 ```bash
 linkedin connection withdraw https://www.linkedin.com/in/vprudnikoff
 linkedin connection withdraw https://www.linkedin.com/in/vprudnikoff --no-unfollow
+```
+
+#### `connection accept`
+
+Accept an incoming connection request.
+
+```bash
+linkedin connection accept <url>
+```
+
+| Arg | Required | Description |
+|-----|----------|-------------|
+| `url` | yes | LinkedIn profile URL |
+
+```bash
+linkedin connection accept https://www.linkedin.com/in/vprudnikoff
+```
+
+#### `connection ignore`
+
+Ignore an incoming connection request.
+
+```bash
+linkedin connection ignore <url>
+```
+
+| Arg | Required | Description |
+|-----|----------|-------------|
+| `url` | yes | LinkedIn profile URL |
+
+```bash
+linkedin connection ignore https://www.linkedin.com/in/vprudnikoff
 ```
 
 #### `connection remove`
