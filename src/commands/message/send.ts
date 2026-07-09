@@ -24,11 +24,16 @@ export default class MessageSend extends BaseCommand {
     'thread-id': Flags.string({
       description: 'Reply into an existing conversation thread instead of passing person-url',
     }),
+    manage: Flags.string({
+      description: 'Manage the conversation right after sending (acts on the same thread)',
+      options: ['archive', 'unarchive', 'star', 'unstar', 'mute', 'unmute'],
+    }),
   };
 
   static override examples = [
     '<%= config.bin %> message send https://www.linkedin.com/in/john-doe "Hello John!"',
     '<%= config.bin %> message send --thread-id 2-abc123... "Sounds good, talk soon!"',
+    '<%= config.bin %> message send https://www.linkedin.com/in/john-doe "Hello John!" --manage archive',
   ];
 
   public async run(): Promise<void> {
@@ -42,18 +47,20 @@ export default class MessageSend extends BaseCommand {
 
     const client = await this.buildAuthenticatedClient();
 
+    const params: Record<string, unknown> = {
+      personUrl: args['person-url'],
+      threadId: flags['thread-id'],
+      text: args.text,
+    };
+
+    if (flags.manage) {
+      params.manageConversation = { operation: flags.manage };
+    }
+
     try {
-      const result = await runVoidWorkflow(
-        client.sendMessage,
-        {
-          personUrl: args['person-url'],
-          threadId: flags['thread-id'],
-          text: args.text,
-        },
-        {
-          isQuiet: flags.quiet,
-        },
-      );
+      const result = await runVoidWorkflow(client.sendMessage, params, {
+        isQuiet: flags.quiet,
+      });
 
       formatVoidOutput({
         errors: result.errors,
