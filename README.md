@@ -368,16 +368,16 @@ linkedin connection pending
 linkedin connection pending --json
 ```
 
-#### `connection requests`
+#### `connection invitations`
 
-List incoming connection requests.
+List incoming connection, company-follow, and newsletter-subscription invitations.
 
 ```bash
-linkedin connection requests
+linkedin connection invitations
 ```
 
 ```bash
-linkedin connection requests --json
+linkedin connection invitations --json
 ```
 
 #### `connection withdraw`
@@ -403,34 +403,40 @@ linkedin connection withdraw https://www.linkedin.com/in/vprudnikoff --no-unfoll
 
 #### `connection accept`
 
-Accept an incoming connection request.
+Accept an incoming invitation.
 
 ```bash
-linkedin connection accept <url>
+linkedin connection accept <type> <url>
 ```
 
 | Arg | Required | Description |
 |-----|----------|-------------|
-| `url` | yes | LinkedIn profile URL |
+| `type` | yes | `connect`, `companyFollow`, or `newsletterSubscribe` |
+| `url` | yes | Matching person, company, or newsletter URL |
 
 ```bash
-linkedin connection accept https://www.linkedin.com/in/vprudnikoff
+linkedin connection accept connect https://www.linkedin.com/in/vprudnikoff
+linkedin connection accept companyFollow https://www.linkedin.com/company/example
+linkedin connection accept newsletterSubscribe https://www.linkedin.com/newsletters/example-1234567890
 ```
 
 #### `connection ignore`
 
-Ignore an incoming connection request.
+Ignore an incoming invitation.
 
 ```bash
-linkedin connection ignore <url>
+linkedin connection ignore <type> <url>
 ```
 
 | Arg | Required | Description |
 |-----|----------|-------------|
-| `url` | yes | LinkedIn profile URL |
+| `type` | yes | `connect`, `companyFollow`, or `newsletterSubscribe` |
+| `url` | yes | Matching person, company, or newsletter URL |
 
 ```bash
-linkedin connection ignore https://www.linkedin.com/in/vprudnikoff
+linkedin connection ignore connect https://www.linkedin.com/in/vprudnikoff
+linkedin connection ignore companyFollow https://www.linkedin.com/company/example
+linkedin connection ignore newsletterSubscribe https://www.linkedin.com/newsletters/example-1234567890
 ```
 
 #### `connection remove`
