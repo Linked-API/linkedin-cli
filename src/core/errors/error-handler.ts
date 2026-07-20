@@ -33,6 +33,7 @@ export function mapLinkedApiErrorToCliError(error: LinkedApiError): TCliError {
       };
 
     case 'subscriptionRequired':
+    case 'trialLimitReached':
     case 'plusPlanRequired':
       return {
         exitCode: EXIT_CODE.SUBSCRIPTION,
