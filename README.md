@@ -996,7 +996,7 @@ Key-value pairs for objects, tables for arrays.
 | 0 | Success (check `success` field – action may have returned an error like "person not found") |
 | 1 | General/unexpected error |
 | 2 | Missing or invalid tokens |
-| 3 | Subscription/plan required |
+| 3 | Subscription/plan required or free trial exhausted |
 | 4 | LinkedIn account issue |
 | 5 | Invalid arguments |
 | 6 | Rate limited |
@@ -1011,6 +1011,8 @@ Key-value pairs for objects, tables for arrays.
 - **URL normalization.** All LinkedIn URLs in responses are normalized to `https://www.linkedin.com/...` format without trailing slashes.
 - **Null fields.** Fields that are unavailable are returned as `null` or `[]`, not omitted.
 - **Action limits.** Configurable per-account action limits on the [platform](https://app.linkedapi.io) prevent LinkedIn policy violations. When a limit is reached, you get a `limitExceeded` error.
+- **Trial limits.** A `trialLimitReached` error exits with code 3. Subscribe or contact support
+  for a trial extension before retrying the workflow.
 
 See [Core Concepts](https://linkedapi.io/docs/core-concepts) for more details.
 
