@@ -457,6 +457,26 @@ linkedin connection remove https://www.linkedin.com/in/vprudnikoff
 
 ---
 
+### Feed
+
+#### `feed retrieve`
+
+Retrieve posts from your personalized LinkedIn home feed.
+
+```bash
+linkedin feed retrieve [flags]
+```
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--limit` | integer | Max posts to retrieve (1–100, default 20) |
+
+```bash
+linkedin feed retrieve --limit 50 --json
+```
+
+---
+
 ### Posts
 
 #### `post fetch`
