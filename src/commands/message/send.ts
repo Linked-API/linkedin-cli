@@ -1,6 +1,7 @@
 import { Args, Flags } from '@oclif/core';
 
 import { BaseCommand } from '@base-command';
+import { resolveMessagePositionals } from '@core/args/resolve-message-positionals';
 import { EXIT_CODE } from '@core/errors/exit-codes';
 import { formatVoidOutput } from '@core/output/formatter';
 import { runVoidWorkflow } from '@core/workflow/workflow-runner';
@@ -15,7 +16,7 @@ export default class MessageSend extends BaseCommand {
     }),
     text: Args.string({
       description: 'Message text (up to 1900 characters)',
-      required: true,
+      required: false,
     }),
   };
 
@@ -38,19 +39,29 @@ export default class MessageSend extends BaseCommand {
 
   public async run(): Promise<void> {
     const { args, flags } = await this.parse(MessageSend);
+    const { personUrl, text } = resolveMessagePositionals(args, flags['thread-id']);
 
-    if (!args['person-url'] && !flags['thread-id']) {
+    if (!personUrl && !flags['thread-id']) {
       this.error('Provide either a person-url argument or the --thread-id flag.', {
         exit: EXIT_CODE.VALIDATION,
       });
     }
 
+    if (!text) {
+      this.error(
+        'Provide the message text: message send <person-url> "<text>", or message send --thread-id <id> "<text>".',
+        {
+          exit: EXIT_CODE.VALIDATION,
+        },
+      );
+    }
+
     const client = await this.buildAuthenticatedClient();
 
     const params: Record<string, unknown> = {
-      personUrl: args['person-url'],
+      personUrl,
       threadId: flags['thread-id'],
-      text: args.text,
+      text,
     };
 
     if (flags.manage) {

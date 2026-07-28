@@ -29,6 +29,7 @@
     "lint": "eslint src --fix",
     "format": "prettier --write --log-level warn \"src/**/*.ts\"",
     "manifest": "oclif manifest",
+    "test": "npm run build && node --test test/*.test.js",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run clean && npm run build",
     "prepare": "husky",
