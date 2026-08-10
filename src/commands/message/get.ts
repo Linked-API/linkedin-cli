@@ -19,11 +19,17 @@ export default class MessageGet extends BaseCommand {
     since: Flags.string({
       description: 'Retrieve messages since ISO timestamp',
     }),
+    days: Flags.integer({
+      description: 'How many days to keep the conversation synced, 1-90 (default 30)',
+      min: 1,
+      max: 90,
+    }),
   };
 
   static override examples = [
     '<%= config.bin %> message get https://www.linkedin.com/in/john-doe',
     '<%= config.bin %> message get https://www.linkedin.com/in/john-doe --since 2024-01-15T10:30:00Z',
+    '<%= config.bin %> message get https://www.linkedin.com/in/john-doe --days 14',
   ];
 
   public async run(): Promise<void> {
@@ -65,6 +71,7 @@ export default class MessageGet extends BaseCommand {
 
       const workflow = await workflowDetails.executeWorkflowWithDetails(client.syncConversation, {
         personUrl: args['person-url'],
+        days: flags.days,
       });
 
       if (!flags.quiet && workflow.message) {

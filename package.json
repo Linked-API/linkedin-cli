@@ -43,7 +43,7 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@linkedapi/node": "^2.3.5",
+    "@linkedapi/node": "^2.3.7",
     "@oclif/core": "^4.2.10"
   },
   "devDependencies": {
