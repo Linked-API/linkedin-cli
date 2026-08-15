@@ -250,15 +250,22 @@ Send a message to a LinkedIn connection.
 
 ```bash
 linkedin message send <person-url> <text>
+linkedin message send --thread-id <thread-id> <text>
 ```
 
 | Arg | Required | Description |
 |-----|----------|-------------|
-| `person-url` | yes | LinkedIn profile URL of the recipient |
+| `person-url` | yes, unless `--thread-id` is given | LinkedIn profile URL of the recipient |
 | `text` | yes | Message text (up to 1900 characters) |
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--thread-id` | string | no | Reply into an existing conversation thread instead of passing `person-url` |
+| `--manage` | string | no | Manage the conversation right after sending: `archive`, `unarchive`, `star`, `unstar`, `mute`, `unmute` |
 
 ```bash
 linkedin message send https://www.linkedin.com/in/vprudnikoff "Hey, loved your latest post!"
+linkedin message send --thread-id 2-abc123... "Sounds good, talk soon!"
 ```
 
 #### `message get`
@@ -748,19 +755,22 @@ Send a message via Sales Navigator (InMail).
 
 ```bash
 linkedin navigator message send <person-url> <text> --subject <subject>
+linkedin navigator message send --thread-id <thread-id> <text>
 ```
 
 | Arg | Required | Description |
 |-----|----------|-------------|
-| `person-url` | yes | LinkedIn profile URL of the recipient |
+| `person-url` | yes, unless `--thread-id` is given | LinkedIn profile URL of the recipient |
 | `text` | yes | Message text (up to 1900 characters) |
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--subject` | string | yes | Message subject line (up to 80 characters) |
+| `--subject` | string | yes, unless `--thread-id` is given | Message subject line (up to 80 characters) |
+| `--thread-id` | string | no | Reply into an existing conversation thread instead of passing `person-url` |
 
 ```bash
 linkedin navigator message send https://www.linkedin.com/in/vprudnikoff "Would love to chat about API integrations" --subject "Partnership Opportunity"
+linkedin navigator message send --thread-id 2-abc123... "Sounds good, talk soon!"
 ```
 
 #### `navigator message get`
