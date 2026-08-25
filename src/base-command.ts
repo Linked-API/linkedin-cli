@@ -1,8 +1,9 @@
 import { Command, Flags } from '@oclif/core';
-import LinkedApi, { LinkedApiError } from '@linkedapi/node';
+import LinkedApi, { HttpClient, LinkedApiError } from '@linkedapi/node';
 
-import { resolveAuthTokens } from '@core/auth/auth-manager';
+import { resolveAuthTokens, TAuthTokens } from '@core/auth/auth-manager';
 import { buildClient } from '@core/client/build-client';
+import { buildHttpClient } from '@core/client/build-http-client';
 import { mapLinkedApiErrorToCliError, writeErrorToStderr } from '@core/errors/error-handler';
 import { EXIT_CODE } from '@core/errors/exit-codes';
 
@@ -39,18 +40,11 @@ export abstract class BaseCommand extends Command {
   }
 
   protected async buildAuthenticatedClient(): Promise<LinkedApi> {
-    try {
-      const { flags } = await this.parse(this.constructor as typeof BaseCommand);
-      const tokens = resolveAuthTokens(flags.account);
-      return buildClient(tokens);
-    } catch (error) {
-      if (error instanceof Error) {
-        process.stderr.write(error.message + '\n');
-      }
+    return buildClient(await this.resolveTokens());
+  }
 
-      this.exit(EXIT_CODE.AUTH);
-      throw error;
-    }
+  protected async buildAuthenticatedHttpClient(): Promise<HttpClient> {
+    return buildHttpClient(await this.resolveTokens());
   }
 
   protected handleError(error: unknown): never {
@@ -77,5 +71,19 @@ export abstract class BaseCommand extends Command {
     this.exit(EXIT_CODE.GENERAL);
 
     throw error;
+  }
+
+  private async resolveTokens(): Promise<TAuthTokens> {
+    try {
+      const { flags } = await this.parse(this.constructor as typeof BaseCommand);
+      return resolveAuthTokens(flags.account);
+    } catch (error) {
+      if (error instanceof Error) {
+        process.stderr.write(error.message + '\n');
+      }
+
+      this.exit(EXIT_CODE.AUTH);
+      throw error;
+    }
   }
 }
