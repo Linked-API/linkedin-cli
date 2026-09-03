@@ -1,6 +1,7 @@
 import { Flags } from '@oclif/core';
 
 import { BaseCommand } from '@base-command';
+import { EXIT_CODE } from '@core/errors/exit-codes';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
 
@@ -17,6 +18,10 @@ export default class JobsSearch extends BaseCommand {
     }),
     location: Flags.string({
       description: 'Filter by location',
+    }),
+    'exclude-similar-results': Flags.boolean({
+      description: 'Exclude near matches, which only the AI-powered search returns',
+      default: false,
     }),
     'date-posted': Flags.string({
       description: 'Filter by date posted',
@@ -62,24 +67,59 @@ export default class JobsSearch extends BaseCommand {
       description: 'Only fair chance employer jobs',
       default: false,
     }),
+    'pref-date-posted': Flags.string({
+      description: 'AI-powered search: prefer jobs by date posted',
+      options: ['anyTime', 'past24Hours', 'pastWeek', 'pastMonth'],
+    }),
+    'pref-experience-levels': Flags.string({
+      description:
+        'AI-powered search: prefer experience levels (comma-separated: entryLevel, senior, manager, director, executive)',
+    }),
+    'pref-employment-types': Flags.string({
+      description:
+        'AI-powered search: prefer employment types (comma-separated: fullTime, partTime, contract, internship, volunteer)',
+    }),
+    'pref-companies': Flags.string({
+      description: 'AI-powered search: prefer company names (comma-separated)',
+    }),
+    'pref-remote': Flags.boolean({
+      description: 'AI-powered search: prefer remote jobs',
+      default: false,
+    }),
+    'pref-easy-apply': Flags.boolean({
+      description: 'AI-powered search: prefer jobs with Easy Apply',
+      default: false,
+    }),
+    'pref-under-10-applicants': Flags.boolean({
+      description: 'AI-powered search: prefer jobs with fewer than 10 applicants',
+      default: false,
+    }),
+    'pref-in-your-network': Flags.boolean({
+      description: 'AI-powered search: prefer jobs from your network',
+      default: false,
+    }),
+    'pref-keywords': Flags.string({
+      description:
+        'AI-powered search: prefer skills, technologies or topics (comma-separated), such as AWS or Fintech',
+    }),
   };
 
   static override examples = [
     '<%= config.bin %> jobs search --term "product manager" --location "San Francisco" --limit 20',
     '<%= config.bin %> jobs search --term engineer --workplace-types "remote,hybrid" --easy-apply --json',
+    '<%= config.bin %> jobs search --term "product manager" --pref-experience-levels "senior,director" --pref-remote --json',
   ];
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(JobsSearch);
 
-    const client = await this.buildAuthenticatedClient();
-
     const params: Record<string, unknown> = {};
     if (flags.term) params.term = flags.term;
     if (flags.limit) params.limit = flags.limit;
+    if (flags.location) params.location = flags.location;
+    if (flags['exclude-similar-results']) params.allowSimilarResults = false;
 
     const filter: Record<string, unknown> = {};
-    if (flags.location) filter.location = flags.location;
     if (flags['date-posted']) filter.datePosted = flags['date-posted'];
     if (flags['experience-levels'])
       filter.experienceLevels = splitCsv(flags['experience-levels']);
@@ -94,9 +134,35 @@ export default class JobsSearch extends BaseCommand {
     if (flags['in-your-network']) filter.inYourNetwork = true;
     if (flags['fair-chance-employer']) filter.fairChanceEmployer = true;
 
+    const preferences: Record<string, unknown> = {};
+    if (flags['pref-date-posted']) preferences.datePosted = flags['pref-date-posted'];
+    if (flags['pref-experience-levels'])
+      preferences.experienceLevels = splitCsv(flags['pref-experience-levels']);
+    if (flags['pref-employment-types'])
+      preferences.employmentTypes = splitCsv(flags['pref-employment-types']);
+    if (flags['pref-companies']) preferences.companies = splitCsv(flags['pref-companies']);
+    if (flags['pref-remote']) preferences.remote = true;
+    if (flags['pref-easy-apply']) preferences.easyApply = true;
+    if (flags['pref-under-10-applicants']) preferences.under10Applicants = true;
+    if (flags['pref-in-your-network']) preferences.inYourNetwork = true;
+    if (flags['pref-keywords']) preferences.keywords = splitCsv(flags['pref-keywords']);
+
+    if (Object.keys(filter).length > 0 && Object.keys(preferences).length > 0) {
+      this.error(
+        'The --pref-* flags target the AI-powered LinkedIn jobs search and cannot be combined with the classic filter flags.',
+        { exit: EXIT_CODE.VALIDATION },
+      );
+    }
+
     if (Object.keys(filter).length > 0) {
       params.filter = filter;
     }
+
+    if (Object.keys(preferences).length > 0) {
+      params.preferences = preferences;
+    }
+
+    const client = await this.buildAuthenticatedClient();
 
     try {
       const result = await runWorkflow(client.searchJobs, params, {

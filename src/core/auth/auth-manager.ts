@@ -1,6 +1,6 @@
 import { findAccountByName, readConfig } from './config-store';
 
-interface TAuthTokens {
+export interface TAuthTokens {
   linkedApiToken: string;
   identificationToken: string;
 }
