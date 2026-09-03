@@ -33,12 +33,19 @@ export function mapLinkedApiErrorToCliError(error: LinkedApiError): TCliError {
       };
 
     case 'subscriptionRequired':
-    case 'trialLimitReached':
     case 'plusPlanRequired':
       return {
         exitCode: EXIT_CODE.SUBSCRIPTION,
         error: error.type,
         message: error.message,
+      };
+
+    case 'trialLimitReached':
+      return {
+        exitCode: EXIT_CODE.SUBSCRIPTION,
+        error: error.type,
+        message: error.message,
+        hint: 'Open the URL in the error to pick a plan. Your LinkedIn account stays connected.',
       };
 
     case 'linkedinAccountSignedOut':
