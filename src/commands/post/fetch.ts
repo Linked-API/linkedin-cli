@@ -3,13 +3,14 @@ import { Args, Flags } from '@oclif/core';
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { buildPostTarget } from '@utils/post-target';
 
 export default class PostFetch extends BaseCommand {
   static override description = 'Fetch a LinkedIn post';
 
   static override args = {
     url: Args.string({
-      description: 'LinkedIn post URL',
+      description: 'LinkedIn post URL or URN',
       required: true,
     }),
   };
@@ -51,7 +52,7 @@ export default class PostFetch extends BaseCommand {
     const client = await this.buildAuthenticatedClient();
 
     const params: Record<string, unknown> = {
-      postUrl: args.url,
+      ...buildPostTarget(args.url),
     };
 
     if (flags.comments) params.retrieveComments = true;

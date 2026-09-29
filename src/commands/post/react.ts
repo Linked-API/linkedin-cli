@@ -3,13 +3,14 @@ import { Args, Flags } from '@oclif/core';
 import { BaseCommand } from '@base-command';
 import { formatVoidOutput } from '@core/output/formatter';
 import { runVoidWorkflow } from '@core/workflow/workflow-runner';
+import { buildPostTarget } from '@utils/post-target';
 
 export default class PostReact extends BaseCommand {
   static override description = 'React to a LinkedIn post';
 
   static override args = {
     url: Args.string({
-      description: 'LinkedIn post URL',
+      description: 'LinkedIn post URL or URN',
       required: true,
     }),
   };
@@ -36,7 +37,7 @@ export default class PostReact extends BaseCommand {
     const client = await this.buildAuthenticatedClient();
 
     const params: Record<string, unknown> = {
-      postUrl: args.url,
+      ...buildPostTarget(args.url),
       type: flags.type,
     };
 

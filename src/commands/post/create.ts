@@ -3,6 +3,7 @@ import { Args, Flags } from '@oclif/core';
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { parsePostMention } from '@utils/post-mention';
 
 export default class PostCreate extends BaseCommand {
   static override description = 'Create a LinkedIn post';
@@ -23,11 +24,16 @@ export default class PostCreate extends BaseCommand {
       description: 'Attachments as url:type[:name] (comma-separated, type: image|video|document)',
       multiple: true,
     }),
+    mention: Flags.string({
+      description: 'Mention as key:name[:identifier], bound to @[key] in the text',
+      multiple: true,
+    }),
   };
 
   static override examples = [
     '<%= config.bin %> post create "Excited to share our latest update!"',
     '<%= config.bin %> post create "Check this out" --attachments "https://example.com/img.jpg:image"',
+    '<%= config.bin %> post create "Thanks @[author]!" --mention "author:Example Person:urn:li:member:123456789"',
   ];
 
   public async run(): Promise<void> {
@@ -40,6 +46,10 @@ export default class PostCreate extends BaseCommand {
     };
 
     if (flags['company-url']) params.companyUrl = flags['company-url'];
+
+    if (flags.mention && flags.mention.length > 0) {
+      params.mentions = flags.mention.map((mention) => parsePostMention(mention));
+    }
 
     if (flags.attachments && flags.attachments.length > 0) {
       const attachments = flags.attachments.map((att) => {
