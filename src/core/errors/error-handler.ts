@@ -44,7 +44,7 @@ export function mapLinkedApiErrorToCliError(error: LinkedApiError): TCliError {
         exitCode: EXIT_CODE.SUBSCRIPTION,
         error: error.type,
         message: error.message,
-        hint: 'Sales Navigator actions need a Plus seat – switch your subscription to Plus at https://app.linkedapi.io/accounts (Manage Subscription → Billing & Invoices). Your LinkedIn account stays connected.',
+        hint: 'Sales Navigator actions need a Plus seat and a Sales Navigator subscription on the LinkedIn account – switch your subscription to Plus at https://app.linkedapi.io/accounts (Manage Subscription → Billing & Invoices). Your LinkedIn account stays connected.',
       };
 
     case 'trialLimitReached':
