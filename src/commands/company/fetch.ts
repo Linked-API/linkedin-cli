@@ -49,6 +49,9 @@ export default class CompanyFetch extends BaseCommand {
     'employees-schools': Flags.string({
       description: 'Filter employees by schools (comma-separated)',
     }),
+    'employees-connection-degrees': Flags.string({
+      description: 'Filter employees by your connection degree (comma-separated: 1st,2nd,3rd+)',
+    }),
     'dms-limit': Flags.integer({
       description: 'Max decision makers to retrieve',
     }),
@@ -92,6 +95,10 @@ export default class CompanyFetch extends BaseCommand {
         filter.industries = flags['employees-industries'].split(',').map((s) => s.trim());
       if (flags['employees-schools'])
         filter.schools = flags['employees-schools'].split(',').map((s) => s.trim());
+      if (flags['employees-connection-degrees'])
+        filter.connectionDegrees = flags['employees-connection-degrees']
+          .split(',')
+          .map((s) => s.trim());
 
       if (Object.keys(filter).length > 0) config.filter = filter;
       if (Object.keys(config).length > 0) params.employeesRetrievalConfig = config;

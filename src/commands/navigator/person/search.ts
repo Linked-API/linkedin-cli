@@ -42,6 +42,9 @@ export default class NavigatorPersonSearch extends BaseCommand {
     'years-of-experience': Flags.string({
       description: 'Filter by experience ranges (comma-separated: lessThanOne,oneToTwo,threeToFive,sixToTen,moreThanTen)',
     }),
+    'connection-degrees': Flags.string({
+      description: 'Filter by your connection degree (comma-separated: 1st,2nd,3rd+,groupMembers)',
+    }),
   };
 
   static override examples = [
@@ -68,7 +71,9 @@ export default class NavigatorPersonSearch extends BaseCommand {
       filter.previousCompanies = splitCsv(flags['previous-companies']);
     if (flags.schools) filter.schools = splitCsv(flags.schools);
     if (flags['years-of-experience'])
-      filter.yearsOfExperience = splitCsv(flags['years-of-experience']);
+      filter.yearsOfExperiences = splitCsv(flags['years-of-experience']);
+    if (flags['connection-degrees'])
+      filter.connectionDegrees = splitCsv(flags['connection-degrees']);
 
     if (Object.keys(filter).length > 0) {
       params.filter = filter;

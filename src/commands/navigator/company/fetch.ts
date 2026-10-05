@@ -48,6 +48,10 @@ export default class NavigatorCompanyFetch extends BaseCommand {
     'employees-years-of-experience': Flags.string({
       description: 'Filter employees by experience ranges (comma-separated)',
     }),
+    'employees-connection-degrees': Flags.string({
+      description:
+        'Filter employees by your connection degree (comma-separated: 1st,2nd,3rd+,groupMembers)',
+    }),
     'dms-limit': Flags.integer({
       description: 'Max decision makers to retrieve',
     }),
@@ -86,6 +90,10 @@ export default class NavigatorCompanyFetch extends BaseCommand {
         filter.schools = flags['employees-schools'].split(',').map((s) => s.trim());
       if (flags['employees-years-of-experience'])
         filter.yearsOfExperiences = flags['employees-years-of-experience']
+          .split(',')
+          .map((s) => s.trim());
+      if (flags['employees-connection-degrees'])
+        filter.connectionDegrees = flags['employees-connection-degrees']
           .split(',')
           .map((s) => s.trim());
 

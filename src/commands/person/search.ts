@@ -39,11 +39,15 @@ export default class PersonSearch extends BaseCommand {
     schools: Flags.string({
       description: 'Filter by schools (comma-separated)',
     }),
+    'connection-degrees': Flags.string({
+      description: 'Filter by your connection degree (comma-separated: 1st,2nd,3rd+)',
+    }),
   };
 
   static override examples = [
     '<%= config.bin %> person search --term "software engineer" --locations "San Francisco"',
     '<%= config.bin %> person search --current-companies Google,Meta --json',
+    '<%= config.bin %> person search --term "founder" --connection-degrees 2nd,3rd+ --json',
   ];
 
   public async run(): Promise<void> {
@@ -65,6 +69,8 @@ export default class PersonSearch extends BaseCommand {
     if (flags['previous-companies'])
       filter.previousCompanies = splitCsv(flags['previous-companies']);
     if (flags.schools) filter.schools = splitCsv(flags.schools);
+    if (flags['connection-degrees'])
+      filter.connectionDegrees = splitCsv(flags['connection-degrees']);
 
     if (Object.keys(filter).length > 0) {
       params.filter = filter;
