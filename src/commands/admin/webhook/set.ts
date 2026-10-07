@@ -1,8 +1,9 @@
-import { Args, Flags } from '@oclif/core';
-import { TWebhookPayloadMode } from '@linkedapi/node';
-
 import { AdminBaseCommand } from '@admin-base-command';
-import { formatAdminOutput } from '@core/output/admin-formatter';
+import { formatWebhookOutput } from '@core/webhooks/format-webhook-output';
+import { parseWebhookEvents } from '@core/webhooks/parse-webhook-events';
+import { readWebhookHeaders } from '@core/webhooks/read-webhook-headers';
+import { TWebhookPayloadMode } from '@linkedapi/node';
+import { Args, Flags } from '@oclif/core';
 
 export default class WebhookSet extends AdminBaseCommand {
   static override description =
@@ -22,11 +23,22 @@ export default class WebhookSet extends AdminBaseCommand {
       options: ['fat', 'thin'],
       default: 'fat',
     }),
+    signing: Flags.boolean({
+      description: 'Enable webhook signing; the returned secret is redacted',
+    }),
+    events: Flags.string({
+      description: 'Comma-separated event types or namespace wildcards; omitted selects all events',
+    }),
+    'headers-stdin': Flags.boolean({
+      description: 'Read a JSON object of custom header names and values from stdin',
+    }),
   };
 
   static override examples = [
     '<%= config.bin %> admin webhook set https://example.com/hooks/linkedapi',
     '<%= config.bin %> admin webhook set https://example.com/hooks --payload-mode thin',
+    '<%= config.bin %> admin webhook set https://example.com/hooks --signing --events "workflow.*,inbox.messageReceived"',
+    'cat headers.json | <%= config.bin %> admin webhook set https://example.com/hooks --headers-stdin',
   ];
 
   public async run(): Promise<void> {
@@ -37,9 +49,12 @@ export default class WebhookSet extends AdminBaseCommand {
       const webhook = await admin.webhooks.set({
         url: args.url,
         payloadMode: flags['payload-mode'] as TWebhookPayloadMode,
+        ...(flags.signing === undefined ? {} : { signingEnabled: flags.signing }),
+        ...(flags.events === undefined ? {} : { events: parseWebhookEvents(flags.events) }),
+        ...(flags['headers-stdin'] ? { headers: await readWebhookHeaders() } : {}),
       });
 
-      formatAdminOutput({
+      formatWebhookOutput({
         data: webhook,
         isJson: flags.json,
         fields: flags.fields,

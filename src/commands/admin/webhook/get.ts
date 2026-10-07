@@ -1,5 +1,5 @@
 import { AdminBaseCommand } from '@admin-base-command';
-import { formatAdminOutput } from '@core/output/admin-formatter';
+import { formatWebhookOutput } from '@core/webhooks/format-webhook-output';
 
 export default class WebhookGet extends AdminBaseCommand {
   static override description = 'List the active webhook subscription for this client';
@@ -17,7 +17,7 @@ export default class WebhookGet extends AdminBaseCommand {
     try {
       const webhooks = await admin.webhooks.get();
 
-      formatAdminOutput({
+      formatWebhookOutput({
         data: webhooks,
         isJson: flags.json,
         fields: flags.fields,

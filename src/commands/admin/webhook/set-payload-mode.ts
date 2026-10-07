@@ -1,8 +1,7 @@
-import { Args } from '@oclif/core';
-import { TWebhookPayloadMode } from '@linkedapi/node';
-
 import { AdminBaseCommand } from '@admin-base-command';
-import { formatAdminOutput } from '@core/output/admin-formatter';
+import { formatWebhookOutput } from '@core/webhooks/format-webhook-output';
+import { TWebhookPayloadMode } from '@linkedapi/node';
+import { Args } from '@oclif/core';
 
 export default class WebhookSetPayloadMode extends AdminBaseCommand {
   static override description = 'Switch the webhook payload mode between fat and thin';
@@ -35,7 +34,7 @@ export default class WebhookSetPayloadMode extends AdminBaseCommand {
         payloadMode: args.mode as TWebhookPayloadMode,
       });
 
-      formatAdminOutput({
+      formatWebhookOutput({
         data: webhook,
         isJson: flags.json,
         fields: flags.fields,
