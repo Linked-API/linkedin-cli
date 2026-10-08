@@ -1,11 +1,8 @@
-const MEMBER_URN_PATTERN = /^urn:li:member:\d+$/;
-const ORGANIZATION_URN_PATTERN = /^urn:li:organization:\d+$/;
-const PERSON_URL_PATTERN = /^https?:\/\/[^/]*linkedin\.com\/in\//i;
-const COMPANY_URL_PATTERN = /^https?:\/\/[^/]*linkedin\.com\/company\//i;
+import { LINKEDIN_IDENTIFIER_PATTERN } from './linkedin-identifier-pattern';
 
-// The identifier is optional and is itself full of colons, so the split cannot be positional: the
-// name ends where a value that announces itself as a URN or a URL begins.
-const MENTION_PATTERN = /^([^:]+):(.*?)(?::((?:urn:li:|https?:\/\/).*))?$/;
+const { memberUrn, organizationUrn, personUrl, companyUrl, startSource } =
+  LINKEDIN_IDENTIFIER_PATTERN;
+const MENTION_PATTERN = new RegExp(`^([^:]+):(.*?)(?::(${startSource}.*))?$`);
 
 export interface TParsedPostMention {
   key: string;
@@ -37,11 +34,11 @@ export function parsePostMention(value: string): TParsedPostMention {
     return mention;
   }
 
-  if (MEMBER_URN_PATTERN.test(identifier) || ORGANIZATION_URN_PATTERN.test(identifier)) {
+  if (memberUrn.test(identifier) || organizationUrn.test(identifier)) {
     mention.urn = identifier;
-  } else if (PERSON_URL_PATTERN.test(identifier)) {
+  } else if (personUrl.test(identifier)) {
     mention.personHashedUrl = identifier;
-  } else if (COMPANY_URL_PATTERN.test(identifier)) {
+  } else if (companyUrl.test(identifier)) {
     mention.companyHashedUrl = identifier;
   } else {
     throw new Error(

@@ -3,6 +3,7 @@ import { Flags } from '@oclif/core';
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { parsePostSearchActorFilter } from '@utils/post-search-actor-filter';
 
 export default class PostSearch extends BaseCommand {
   static override description = 'Search for posts on LinkedIn';
@@ -32,19 +33,24 @@ export default class PostSearch extends BaseCommand {
         'Filter by author relationship (comma-separated: me, firstConnections, peopleYouFollow)',
     }),
     'from-members': Flags.string({
-      description: 'Filter by names of people whose posts to keep (comma-separated)',
+      description:
+        'Filter by people whose posts to keep (comma-separated name or name:identifier, where the identifier is a member URN or profile URL)',
     }),
     'from-companies': Flags.string({
-      description: 'Filter by names of companies whose posts to keep (comma-separated)',
+      description:
+        'Filter by companies whose posts to keep (comma-separated name or name:identifier, where the identifier is an organization URN or company URL)',
     }),
     'mentioning-members': Flags.string({
-      description: 'Filter by names of people the post must mention (comma-separated)',
+      description:
+        'Filter by people the post must mention (comma-separated name or name:identifier, where the identifier is a member URN or profile URL)',
     }),
     'mentioning-companies': Flags.string({
-      description: 'Filter by names of companies the post must mention (comma-separated)',
+      description:
+        'Filter by companies the post must mention (comma-separated name or name:identifier, where the identifier is an organization URN or company URL)',
     }),
     'author-companies': Flags.string({
-      description: 'Filter by names of companies the author works at (comma-separated)',
+      description:
+        'Filter by companies the author works at (comma-separated name or name:identifier, where the identifier is an organization URN or company URL)',
     }),
     'author-industries': Flags.string({
       description: 'Filter by industries the author works in (comma-separated)',
@@ -55,6 +61,7 @@ export default class PostSearch extends BaseCommand {
     '<%= config.bin %> post search --term "climate tech" --date-posted pastWeek --json',
     '<%= config.bin %> post search --term "product launch" --content-type images --sort latest --limit 20 --json',
     '<%= config.bin %> post search --term "hiring" --from-companies "Linked API" --posted-by "peopleYouFollow" --json',
+    '<%= config.bin %> post search --term "ai" --from-members "Bill Gates,Example Person:urn:li:member:123456789" --mentioning-companies "Example Company:https://www.linkedin.com/company/example-company" --json',
   ];
 
   public async run(): Promise<void> {
@@ -71,13 +78,31 @@ export default class PostSearch extends BaseCommand {
     if (flags['date-posted']) filter.datePosted = flags['date-posted'];
     if (flags['content-type']) filter.contentType = flags['content-type'];
     if (flags['posted-by']) filter.postedBy = splitCsv(flags['posted-by']);
-    if (flags['from-members']) filter.fromMembers = splitCsv(flags['from-members']);
-    if (flags['from-companies']) filter.fromCompanies = splitCsv(flags['from-companies']);
+    if (flags['from-members'])
+      filter.fromMembers = parsePostSearchActorFilter({
+        value: flags['from-members'],
+        actorKind: 'member',
+      });
+    if (flags['from-companies'])
+      filter.fromCompanies = parsePostSearchActorFilter({
+        value: flags['from-companies'],
+        actorKind: 'company',
+      });
     if (flags['mentioning-members'])
-      filter.mentioningMembers = splitCsv(flags['mentioning-members']);
+      filter.mentioningMembers = parsePostSearchActorFilter({
+        value: flags['mentioning-members'],
+        actorKind: 'member',
+      });
     if (flags['mentioning-companies'])
-      filter.mentioningCompanies = splitCsv(flags['mentioning-companies']);
-    if (flags['author-companies']) filter.authorCompanies = splitCsv(flags['author-companies']);
+      filter.mentioningCompanies = parsePostSearchActorFilter({
+        value: flags['mentioning-companies'],
+        actorKind: 'company',
+      });
+    if (flags['author-companies'])
+      filter.authorCompanies = parsePostSearchActorFilter({
+        value: flags['author-companies'],
+        actorKind: 'company',
+      });
     if (flags['author-industries']) filter.authorIndustries = splitCsv(flags['author-industries']);
 
     if (Object.keys(filter).length > 0) {
