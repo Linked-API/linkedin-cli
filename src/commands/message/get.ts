@@ -5,7 +5,8 @@ import { formatOutput } from '@core/output/formatter';
 import { workflowDetails } from '@core/workflow/workflow-details';
 
 export default class MessageGet extends BaseCommand {
-  static override description = 'Get conversation messages with a LinkedIn person';
+  static override description =
+    "Get conversation messages with a LinkedIn person, loading their history on first call. Prefer 'linkedin inbox get --person <url>' to read messages";
 
   static override args = {
     'person-url': Args.string({

@@ -289,7 +289,39 @@ linkedin message get https://www.linkedin.com/in/vprudnikoff --json
 linkedin message get https://www.linkedin.com/in/vprudnikoff --since 2024-01-15T10:30:00Z
 ```
 
-> **Note:** The first call for a conversation triggers a background sync, which may take longer. Subsequent calls use cached data and are faster.
+> **Note:** The first call for a conversation loads its history, which may take longer. Subsequent calls use cached data and are faster. Call it once per person – not to check for new messages: prefer `linkedin inbox get --person <url>` to read messages.
+
+#### `inbox sync`
+
+Enable whole-inbox monitoring for the account. This is the recommended first step for reading messages: run it once, before sending messages whose replies you want to read. Only messages that arrive after it runs are captured.
+
+```bash
+linkedin inbox sync         # standard inbox
+linkedin inbox sync --nv    # Sales Navigator inbox
+```
+
+#### `inbox get`
+
+Get messages from the monitored inbox; use `--person` for one person's whole conversation.
+
+```bash
+linkedin inbox get [flags]
+```
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--since` | string | Only retrieve messages at or after this ISO timestamp |
+| `--type` | string | Filter by inbox type: `st` or `nv` (default: both) |
+| `--thread-id` | string | Restrict to a single conversation thread |
+| `--person` | string | LinkedIn profile URL. Return the whole known conversation with this person, including history loaded by `message get`. A hashed URL always matches; a public URL only once Linked API knows it |
+
+```bash
+linkedin inbox get --json
+linkedin inbox get --since 2024-01-15T10:30:00Z --type nv
+linkedin inbox get --person https://www.linkedin.com/in/vprudnikoff --json
+```
+
+With `--person`, the output carries `threads` next to `messages`: each thread has `threadId` (may be `null`), `type`, `personUrn`, `historyFrom` and `historyComplete`, and each message has `inboxMessageId`. If `historyComplete` is `false` and you need earlier messages, run `message get <person-url>` once.
 
 ---
 

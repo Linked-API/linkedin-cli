@@ -4,7 +4,8 @@ import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 
 export default class InboxGet extends BaseCommand {
-  static override description = 'Get messages from the monitored inbox across all conversations';
+  static override description =
+    "Get messages from the monitored inbox; use --person for one person's whole conversation";
 
   static override flags = {
     ...BaseCommand.baseFlags,
@@ -18,11 +19,16 @@ export default class InboxGet extends BaseCommand {
     'thread-id': Flags.string({
       description: 'Restrict to a single conversation thread',
     }),
+    person: Flags.string({
+      description:
+        "LinkedIn profile URL: return the whole known conversation with this person, including history loaded by 'message get'. A hashed URL always matches; a public URL only once Linked API knows it",
+    }),
   };
 
   static override examples = [
     '<%= config.bin %> inbox get',
     '<%= config.bin %> inbox get --since 2024-01-15T10:30:00Z --type nv',
+    '<%= config.bin %> inbox get --person https://www.linkedin.com/in/john-doe --json',
   ];
 
   public async run(): Promise<void> {
@@ -39,6 +45,7 @@ export default class InboxGet extends BaseCommand {
         since: flags.since,
         type: flags.type as 'st' | 'nv' | undefined,
         threadId: flags['thread-id'],
+        personUrl: flags.person,
       });
 
       formatOutput({

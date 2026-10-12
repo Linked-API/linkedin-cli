@@ -5,7 +5,8 @@ import { formatOutput } from '@core/output/formatter';
 import { workflowDetails } from '@core/workflow/workflow-details';
 
 export default class NavigatorMessageGet extends BaseCommand {
-  static override description = 'Get Sales Navigator conversation messages';
+  static override description =
+    "Get Sales Navigator conversation messages, loading their history on first call. Prefer 'linkedin inbox get --person <url> --type nv' to read messages";
 
   static override args = {
     'person-url': Args.string({
