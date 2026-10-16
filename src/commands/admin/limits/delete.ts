@@ -1,11 +1,11 @@
-import { Args, Flags } from '@oclif/core';
-import type { TLimitCategory, TLimitPeriod } from '@linkedapi/node';
-
 import { AdminBaseCommand } from '@admin-base-command';
 import { formatAdminVoidOutput } from '@core/output/admin-formatter';
+import type { TLimitCategory, TLimitPeriod } from '@linkedapi/node';
+import { Args, Flags } from '@oclif/core';
 
 export default class AdminLimitsDelete extends AdminBaseCommand {
-  static override description = 'Delete specific limits (falls back to defaults)';
+  static override description =
+    'Delete a specific limit. The removed category/period has no limit until set again. Use linkedin admin limits reset <accountId> to restore all default limits for the account.';
 
   static override args = {
     accountId: Args.string({
@@ -17,7 +17,7 @@ export default class AdminLimitsDelete extends AdminBaseCommand {
   static override flags = {
     ...AdminBaseCommand.baseFlags,
     category: Flags.string({
-      description: 'Limit category',
+      description: 'Limit category (e.g. stMessages, stEndorsements)',
       required: true,
     }),
     period: Flags.string({
