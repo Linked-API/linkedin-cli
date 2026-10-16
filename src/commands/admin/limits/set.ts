@@ -1,8 +1,7 @@
-import { Args, Flags } from '@oclif/core';
-import type { TLimitCategory, TLimitPeriod } from '@linkedapi/node';
-
 import { AdminBaseCommand } from '@admin-base-command';
 import { formatAdminVoidOutput } from '@core/output/admin-formatter';
+import type { TLimitCategory, TLimitPeriod } from '@linkedapi/node';
+import { Args, Flags } from '@oclif/core';
 
 export default class AdminLimitsSet extends AdminBaseCommand {
   static override description = 'Set limits for an account';
@@ -17,7 +16,7 @@ export default class AdminLimitsSet extends AdminBaseCommand {
   static override flags = {
     ...AdminBaseCommand.baseFlags,
     category: Flags.string({
-      description: 'Limit category',
+      description: 'Limit category (e.g. stMessages, stEndorsements)',
       required: true,
     }),
     period: Flags.string({
