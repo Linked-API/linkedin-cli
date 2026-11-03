@@ -683,6 +683,30 @@ linkedin stats usage --start 2024-01-01T00:00:00Z --end 2024-01-31T00:00:00Z --j
 
 Requires a LinkedIn Sales Navigator subscription.
 
+#### `navigator alerts`
+
+Retrieve lead and account alerts, newest first by default.
+
+```bash
+linkedin navigator alerts --limit 50 --json
+linkedin navigator alerts --category lead --sort relevance --exclude-suggested
+linkedin navigator alerts --types "EXACT_MACHINE_CODE,ANOTHER_CODE" --since 2026-10-01T00:00:00Z
+```
+
+`--limit` defaults to 50 (1–1000); `--sort` accepts `latest` or `relevance`.
+Omit `--category` for both lead and account alerts. `--types` takes exact upstream
+machine codes, including future codes; an empty list imposes no restriction.
+`--since` is inclusive. Filters are ANDed. Unsaved subjects and subjects with
+unknown saved state are included by default. `--exclude-suggested` returns only
+subjects confirmed as saved. Saved-search and shared-list system notifications
+are excluded.
+
+The result array contains `id`, `type`, `publishedAt`, `subject` (`type`, `urn`,
+nullable `name`, `url`, nullable `saved`), plus nullable `headline`, `text`,
+`subline`, `url`, and `relatedEntityUrn`. Subject URLs work with `navigator person
+fetch` or `navigator company fetch`.
+
+
 #### `navigator person fetch`
 
 Fetch a person profile via Sales Navigator.
