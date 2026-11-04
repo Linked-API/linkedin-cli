@@ -3,6 +3,7 @@ import { Args, Flags } from '@oclif/core';
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { splitListFlag } from '@utils/split-list-flag';
 
 export default class CompanyFetch extends BaseCommand {
   static override description = 'Fetch a LinkedIn company profile';
@@ -41,13 +42,16 @@ export default class CompanyFetch extends BaseCommand {
       description: 'Filter employees by position',
     }),
     'employees-locations': Flags.string({
-      description: 'Filter employees by locations (comma-separated)',
+      description:
+        'Filter employees by locations (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'employees-industries': Flags.string({
-      description: 'Filter employees by industries (comma-separated)',
+      description:
+        'Filter employees by industries (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'employees-schools': Flags.string({
-      description: 'Filter employees by schools (comma-separated)',
+      description:
+        'Filter employees by schools (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'employees-connection-degrees': Flags.string({
       description: 'Filter employees by your connection degree (comma-separated: 1st,2nd,3rd+)',
@@ -90,15 +94,12 @@ export default class CompanyFetch extends BaseCommand {
       if (flags['employees-last-name']) filter.lastName = flags['employees-last-name'];
       if (flags['employees-position']) filter.position = flags['employees-position'];
       if (flags['employees-locations'])
-        filter.locations = flags['employees-locations'].split(',').map((s) => s.trim());
+        filter.locations = splitListFlag(flags['employees-locations']);
       if (flags['employees-industries'])
-        filter.industries = flags['employees-industries'].split(',').map((s) => s.trim());
-      if (flags['employees-schools'])
-        filter.schools = flags['employees-schools'].split(',').map((s) => s.trim());
+        filter.industries = splitListFlag(flags['employees-industries']);
+      if (flags['employees-schools']) filter.schools = splitListFlag(flags['employees-schools']);
       if (flags['employees-connection-degrees'])
-        filter.connectionDegrees = flags['employees-connection-degrees']
-          .split(',')
-          .map((s) => s.trim());
+        filter.connectionDegrees = splitListFlag(flags['employees-connection-degrees']);
 
       if (Object.keys(filter).length > 0) config.filter = filter;
       if (Object.keys(config).length > 0) params.employeesRetrievalConfig = config;

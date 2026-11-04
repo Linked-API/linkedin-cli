@@ -4,6 +4,7 @@ import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
 import { parsePostSearchActorFilter } from '@utils/post-search-actor-filter';
+import { splitListFlag } from '@utils/split-list-flag';
 
 export default class PostSearch extends BaseCommand {
   static override description = 'Search for posts on LinkedIn';
@@ -34,26 +35,27 @@ export default class PostSearch extends BaseCommand {
     }),
     'from-members': Flags.string({
       description:
-        'Filter by people whose posts to keep (comma-separated name or name:identifier, where the identifier is a member URN or profile URL)',
+        'Filter by people whose posts to keep (comma-separated, or a JSON array if a value contains a comma, of name or name:identifier, where the identifier is a member URN or profile URL)',
     }),
     'from-companies': Flags.string({
       description:
-        'Filter by companies whose posts to keep (comma-separated name or name:identifier, where the identifier is an organization URN or company URL)',
+        'Filter by companies whose posts to keep (comma-separated, or a JSON array if a value contains a comma, of name or name:identifier, where the identifier is an organization URN or company URL)',
     }),
     'mentioning-members': Flags.string({
       description:
-        'Filter by people the post must mention (comma-separated name or name:identifier, where the identifier is a member URN or profile URL)',
+        'Filter by people the post must mention (comma-separated, or a JSON array if a value contains a comma, of name or name:identifier, where the identifier is a member URN or profile URL)',
     }),
     'mentioning-companies': Flags.string({
       description:
-        'Filter by companies the post must mention (comma-separated name or name:identifier, where the identifier is an organization URN or company URL)',
+        'Filter by companies the post must mention (comma-separated, or a JSON array if a value contains a comma, of name or name:identifier, where the identifier is an organization URN or company URL)',
     }),
     'author-companies': Flags.string({
       description:
-        'Filter by companies the author works at (comma-separated name or name:identifier, where the identifier is an organization URN or company URL)',
+        'Filter by companies the author works at (comma-separated, or a JSON array if a value contains a comma, of name or name:identifier, where the identifier is an organization URN or company URL)',
     }),
     'author-industries': Flags.string({
-      description: 'Filter by industries the author works in (comma-separated)',
+      description:
+        'Filter by industries the author works in (comma-separated, or a JSON array if a value contains a comma)',
     }),
   };
 
@@ -77,7 +79,7 @@ export default class PostSearch extends BaseCommand {
     if (flags.sort) filter.sort = flags.sort;
     if (flags['date-posted']) filter.datePosted = flags['date-posted'];
     if (flags['content-type']) filter.contentType = flags['content-type'];
-    if (flags['posted-by']) filter.postedBy = splitCsv(flags['posted-by']);
+    if (flags['posted-by']) filter.postedBy = splitListFlag(flags['posted-by']);
     if (flags['from-members'])
       filter.fromMembers = parsePostSearchActorFilter({
         value: flags['from-members'],
@@ -103,7 +105,8 @@ export default class PostSearch extends BaseCommand {
         value: flags['author-companies'],
         actorKind: 'company',
       });
-    if (flags['author-industries']) filter.authorIndustries = splitCsv(flags['author-industries']);
+    if (flags['author-industries'])
+      filter.authorIndustries = splitListFlag(flags['author-industries']);
 
     if (Object.keys(filter).length > 0) {
       params.filter = filter;
@@ -125,8 +128,4 @@ export default class PostSearch extends BaseCommand {
       this.handleError(error);
     }
   }
-}
-
-function splitCsv(value: string): Array<string> {
-  return value.split(',').map((s) => s.trim());
 }

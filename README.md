@@ -94,6 +94,12 @@ Every command supports these flags:
 | `--no-color` | Disable colors |
 | `--account "Name"` | Use a specific account for this command |
 
+List flags documented as comma-separated split their value on every comma. When a value contains a comma itself – `Chicago, Illinois`, `Technology, Information and Internet`, `Example Co., Ltd.` – pass the whole list as a JSON array instead:
+
+```bash
+linkedin person search --term "designer" --locations '["Chicago, Illinois","London, United Kingdom"]' --json
+```
+
 ---
 
 ## Command Reference
@@ -154,7 +160,8 @@ linkedin person search [flags]
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--term` | string | Search keyword or phrase |
+| `--term` | string | Search keyword or phrase; required unless `--url` is given |
+| `--url` | string | LinkedIn people search URL (`linkedin.com/search/results/people/...`), such as the `searchUrl` of an anonymous viewer from `stats viewers`; overrides `--term` and the filters |
 | `--limit` | integer | Max results to return |
 | `--first-name` | string | Filter by first name |
 | `--last-name` | string | Filter by last name |
@@ -167,8 +174,9 @@ linkedin person search [flags]
 
 ```bash
 linkedin person search --term "revops engineer" --locations "San Francisco"
-linkedin person search --current-companies "Linked API" --position "Engineer" --json
-linkedin person search --schools "MIT" --industries "Software Development" --limit 20 --json
+linkedin person search --term "engineer" --current-companies "Linked API" --json
+linkedin person search --term "founder" --schools "MIT" --industries "Software Development" --limit 20 --json
+linkedin person search --url "https://www.linkedin.com/search/results/people/?keywords=CTO" --json
 ```
 
 ---
@@ -229,7 +237,8 @@ linkedin company search [flags]
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--term` | string | Search keyword or phrase |
+| `--term` | string | Search keyword or phrase; required unless `--url` is given |
+| `--url` | string | LinkedIn companies search URL (`linkedin.com/search/results/companies/...`); overrides `--term` and the filters |
 | `--limit` | integer | Max results to return |
 | `--sizes` | string | Company sizes, comma-separated (`1-10`, `11-50`, `51-200`, `201-500`, `501-1000`, `1001-5000`, `5001-10000`, `10001+`) |
 | `--locations` | string | Comma-separated locations |
@@ -237,7 +246,7 @@ linkedin company search [flags]
 
 ```bash
 linkedin company search --term "fintech" --sizes "11-50,51-200" --json
-linkedin company search --industries "Software Development" --locations "Berlin" --json
+linkedin company search --term "payments" --industries "Software Development" --locations "Berlin" --json
 ```
 
 ---
@@ -733,7 +742,8 @@ linkedin navigator person search [flags]
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--term` | string | Search keyword or phrase |
+| `--term` | string | Search keyword or phrase; required unless `--url` is given |
+| `--url` | string | Sales Navigator people search URL (`linkedin.com/sales/search/people/...`); overrides `--term` and the filters |
 | `--limit` | integer | Max results to return |
 | `--first-name` | string | Filter by first name |
 | `--last-name` | string | Filter by last name |
@@ -747,7 +757,7 @@ linkedin navigator person search [flags]
 
 ```bash
 linkedin navigator person search --term "VP Marketing" --locations "United States"
-linkedin navigator person search --years-of-experience "moreThanTen" --position "CEO" --json
+linkedin navigator person search --term "CEO" --years-of-experience "moreThanTen" --json
 ```
 
 #### `navigator company fetch`
@@ -792,7 +802,8 @@ linkedin navigator company search [flags]
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--term` | string | Search keyword or phrase |
+| `--term` | string | Search keyword or phrase; required unless `--url` is given |
+| `--url` | string | Sales Navigator companies search URL (`linkedin.com/sales/search/company/...`); overrides `--term` and the filters |
 | `--limit` | integer | Max results to return |
 | `--sizes` | string | Company sizes, comma-separated (`1-10`, `11-50`, `51-200`, `201-500`, `501-1000`, `1001-5000`, `5001-10000`, `10001+`) |
 | `--locations` | string | Comma-separated locations |
@@ -802,7 +813,7 @@ linkedin navigator company search [flags]
 
 ```bash
 linkedin navigator company search --term "fintech" --sizes "11-50,51-200"
-linkedin navigator company search --revenue-min 10 --revenue-max 100 --locations "United States" --json
+linkedin navigator company search --term "logistics" --revenue-min 10 --revenue-max 100 --locations "United States" --json
 ```
 
 #### `navigator message send`
