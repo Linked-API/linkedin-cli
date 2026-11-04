@@ -1,4 +1,5 @@
 import { LINKEDIN_IDENTIFIER_PATTERN } from './linkedin-identifier-pattern';
+import { splitListFlag } from './split-list-flag';
 
 const {
   startSource,
@@ -31,8 +32,8 @@ interface TActorFilterWithId {
 type TActorFilterEntry = string | TActorFilterWithId;
 
 /**
- * Parses a comma-separated `post search` actor flag, where each element is `name` or
- * `name:identifier`.
+ * Parses a `post search` actor flag – a list as `splitListFlag` reads it – where each element is
+ * `name` or `name:identifier`.
  *
  * An element without an identifier stays the plain string it always was, so existing calls send
  * exactly what they sent before. An identifier must name the flag's kind of entity: a person for
@@ -45,7 +46,7 @@ export function parsePostSearchActorFilter({
   value: string;
   actorKind: TActorKind;
 }): Array<TActorFilterEntry> {
-  return value.split(',').map((element) => parseElement({ element: element.trim(), actorKind }));
+  return splitListFlag(value).map((element) => parseElement({ element, actorKind }));
 }
 
 function parseElement({

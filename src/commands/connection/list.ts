@@ -3,6 +3,7 @@ import { Flags } from '@oclif/core';
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { splitListFlag } from '@utils/split-list-flag';
 
 export default class ConnectionList extends BaseCommand {
   static override description = 'List your LinkedIn connections';
@@ -25,19 +26,24 @@ export default class ConnectionList extends BaseCommand {
       description: 'Filter by job position',
     }),
     locations: Flags.string({
-      description: 'Filter by locations (comma-separated)',
+      description:
+        'Filter by locations (comma-separated, or a JSON array if a value contains a comma)',
     }),
     industries: Flags.string({
-      description: 'Filter by industries (comma-separated)',
+      description:
+        'Filter by industries (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'current-companies': Flags.string({
-      description: 'Filter by current companies (comma-separated)',
+      description:
+        'Filter by current companies (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'previous-companies': Flags.string({
-      description: 'Filter by previous companies (comma-separated)',
+      description:
+        'Filter by previous companies (comma-separated, or a JSON array if a value contains a comma)',
     }),
     schools: Flags.string({
-      description: 'Filter by schools (comma-separated)',
+      description:
+        'Filter by schools (comma-separated, or a JSON array if a value contains a comma)',
     }),
   };
 
@@ -59,13 +65,13 @@ export default class ConnectionList extends BaseCommand {
     if (flags['first-name']) filter.firstName = flags['first-name'];
     if (flags['last-name']) filter.lastName = flags['last-name'];
     if (flags.position) filter.position = flags.position;
-    if (flags.locations) filter.locations = flags.locations.split(',').map((s) => s.trim());
-    if (flags.industries) filter.industries = flags.industries.split(',').map((s) => s.trim());
+    if (flags.locations) filter.locations = splitListFlag(flags.locations);
+    if (flags.industries) filter.industries = splitListFlag(flags.industries);
     if (flags['current-companies'])
-      filter.currentCompanies = flags['current-companies'].split(',').map((s) => s.trim());
+      filter.currentCompanies = splitListFlag(flags['current-companies']);
     if (flags['previous-companies'])
-      filter.previousCompanies = flags['previous-companies'].split(',').map((s) => s.trim());
-    if (flags.schools) filter.schools = flags.schools.split(',').map((s) => s.trim());
+      filter.previousCompanies = splitListFlag(flags['previous-companies']);
+    if (flags.schools) filter.schools = splitListFlag(flags.schools);
 
     if (Object.keys(filter).length > 0) {
       params.filter = filter;

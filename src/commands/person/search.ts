@@ -1,8 +1,10 @@
 import { Flags } from '@oclif/core';
 
 import { BaseCommand } from '@base-command';
+import { EXIT_CODE } from '@core/errors/exit-codes';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { splitListFlag } from '@utils/split-list-flag';
 
 export default class PersonSearch extends BaseCommand {
   static override description = 'Search for people on LinkedIn';
@@ -10,7 +12,11 @@ export default class PersonSearch extends BaseCommand {
   static override flags = {
     ...BaseCommand.baseFlags,
     term: Flags.string({
-      description: 'Search keyword or phrase',
+      description: 'Search keyword or phrase (required unless --url is given)',
+    }),
+    url: Flags.string({
+      description:
+        'LinkedIn people search URL (linkedin.com/search/results/people/...), such as the searchUrl of an anonymous viewer from `stats viewers`. Overrides --term and the filters',
     }),
     limit: Flags.integer({
       description: 'Max results to return',
@@ -25,19 +31,24 @@ export default class PersonSearch extends BaseCommand {
       description: 'Filter by job position',
     }),
     locations: Flags.string({
-      description: 'Filter by locations (comma-separated)',
+      description:
+        'Filter by locations (comma-separated, or a JSON array if a value contains a comma)',
     }),
     industries: Flags.string({
-      description: 'Filter by industries (comma-separated)',
+      description:
+        'Filter by industries (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'current-companies': Flags.string({
-      description: 'Filter by current companies (comma-separated)',
+      description:
+        'Filter by current companies (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'previous-companies': Flags.string({
-      description: 'Filter by previous companies (comma-separated)',
+      description:
+        'Filter by previous companies (comma-separated, or a JSON array if a value contains a comma)',
     }),
     schools: Flags.string({
-      description: 'Filter by schools (comma-separated)',
+      description:
+        'Filter by schools (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'connection-degrees': Flags.string({
       description: 'Filter by your connection degree (comma-separated: 1st,2nd,3rd+)',
@@ -46,31 +57,40 @@ export default class PersonSearch extends BaseCommand {
 
   static override examples = [
     '<%= config.bin %> person search --term "software engineer" --locations "San Francisco"',
-    '<%= config.bin %> person search --current-companies Google,Meta --json',
+    '<%= config.bin %> person search --term "engineer" --current-companies Google,Meta --json',
     '<%= config.bin %> person search --term "founder" --connection-degrees 2nd,3rd+ --json',
+    '<%= config.bin %> person search --url "https://www.linkedin.com/search/results/people/?keywords=CTO" --json',
   ];
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(PersonSearch);
 
+    if (!flags.term && !flags.url) {
+      this.error('Either --term or --url is required; filters alone are not accepted.', {
+        exit: EXIT_CODE.VALIDATION,
+      });
+    }
+
     const client = await this.buildAuthenticatedClient();
 
     const params: Record<string, unknown> = {};
     if (flags.term) params.term = flags.term;
+    if (flags.url) params.customSearchUrl = flags.url;
     if (flags.limit) params.limit = flags.limit;
 
     const filter: Record<string, unknown> = {};
     if (flags['first-name']) filter.firstName = flags['first-name'];
     if (flags['last-name']) filter.lastName = flags['last-name'];
     if (flags.position) filter.position = flags.position;
-    if (flags.locations) filter.locations = splitCsv(flags.locations);
-    if (flags.industries) filter.industries = splitCsv(flags.industries);
-    if (flags['current-companies']) filter.currentCompanies = splitCsv(flags['current-companies']);
+    if (flags.locations) filter.locations = splitListFlag(flags.locations);
+    if (flags.industries) filter.industries = splitListFlag(flags.industries);
+    if (flags['current-companies'])
+      filter.currentCompanies = splitListFlag(flags['current-companies']);
     if (flags['previous-companies'])
-      filter.previousCompanies = splitCsv(flags['previous-companies']);
-    if (flags.schools) filter.schools = splitCsv(flags.schools);
+      filter.previousCompanies = splitListFlag(flags['previous-companies']);
+    if (flags.schools) filter.schools = splitListFlag(flags.schools);
     if (flags['connection-degrees'])
-      filter.connectionDegrees = splitCsv(flags['connection-degrees']);
+      filter.connectionDegrees = splitListFlag(flags['connection-degrees']);
 
     if (Object.keys(filter).length > 0) {
       params.filter = filter;
@@ -92,8 +112,4 @@ export default class PersonSearch extends BaseCommand {
       this.handleError(error);
     }
   }
-}
-
-function splitCsv(value: string): Array<string> {
-  return value.split(',').map((s) => s.trim());
 }

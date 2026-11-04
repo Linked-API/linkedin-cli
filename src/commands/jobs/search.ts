@@ -4,6 +4,7 @@ import { BaseCommand } from '@base-command';
 import { EXIT_CODE } from '@core/errors/exit-codes';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { splitListFlag } from '@utils/split-list-flag';
 
 export default class JobsSearch extends BaseCommand {
   static override description = 'Search for jobs on LinkedIn';
@@ -39,13 +40,16 @@ export default class JobsSearch extends BaseCommand {
       description: 'Filter by workplace types (comma-separated: onSite, remote, hybrid)',
     }),
     companies: Flags.string({
-      description: 'Filter by company names (comma-separated)',
+      description:
+        'Filter by company names (comma-separated, or a JSON array if a value contains a comma)',
     }),
     industries: Flags.string({
-      description: 'Filter by industries (comma-separated)',
+      description:
+        'Filter by industries (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'job-functions': Flags.string({
-      description: 'Filter by job functions (comma-separated)',
+      description:
+        'Filter by job functions (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'easy-apply': Flags.boolean({
       description: 'Only jobs with Easy Apply',
@@ -80,7 +84,8 @@ export default class JobsSearch extends BaseCommand {
         'AI-powered search: prefer employment types (comma-separated: fullTime, partTime, contract, internship, volunteer)',
     }),
     'pref-companies': Flags.string({
-      description: 'AI-powered search: prefer company names (comma-separated)',
+      description:
+        'AI-powered search: prefer company names (comma-separated, or a JSON array if a value contains a comma)',
     }),
     'pref-remote': Flags.boolean({
       description: 'AI-powered search: prefer remote jobs',
@@ -100,7 +105,7 @@ export default class JobsSearch extends BaseCommand {
     }),
     'pref-keywords': Flags.string({
       description:
-        'AI-powered search: prefer skills, technologies or topics (comma-separated), such as AWS or Fintech',
+        'AI-powered search: prefer skills, technologies or topics (comma-separated, or a JSON array if a value contains a comma), such as AWS or Fintech',
     }),
   };
 
@@ -122,12 +127,13 @@ export default class JobsSearch extends BaseCommand {
     const filter: Record<string, unknown> = {};
     if (flags['date-posted']) filter.datePosted = flags['date-posted'];
     if (flags['experience-levels'])
-      filter.experienceLevels = splitCsv(flags['experience-levels']);
-    if (flags['employment-types']) filter.employmentTypes = splitCsv(flags['employment-types']);
-    if (flags['workplace-types']) filter.workplaceTypes = splitCsv(flags['workplace-types']);
-    if (flags.companies) filter.companies = splitCsv(flags.companies);
-    if (flags.industries) filter.industries = splitCsv(flags.industries);
-    if (flags['job-functions']) filter.jobFunctions = splitCsv(flags['job-functions']);
+      filter.experienceLevels = splitListFlag(flags['experience-levels']);
+    if (flags['employment-types'])
+      filter.employmentTypes = splitListFlag(flags['employment-types']);
+    if (flags['workplace-types']) filter.workplaceTypes = splitListFlag(flags['workplace-types']);
+    if (flags.companies) filter.companies = splitListFlag(flags.companies);
+    if (flags.industries) filter.industries = splitListFlag(flags.industries);
+    if (flags['job-functions']) filter.jobFunctions = splitListFlag(flags['job-functions']);
     if (flags['easy-apply']) filter.easyApply = true;
     if (flags['has-verifications']) filter.hasVerifications = true;
     if (flags['under-10-applicants']) filter.under10Applicants = true;
@@ -137,15 +143,15 @@ export default class JobsSearch extends BaseCommand {
     const preferences: Record<string, unknown> = {};
     if (flags['pref-date-posted']) preferences.datePosted = flags['pref-date-posted'];
     if (flags['pref-experience-levels'])
-      preferences.experienceLevels = splitCsv(flags['pref-experience-levels']);
+      preferences.experienceLevels = splitListFlag(flags['pref-experience-levels']);
     if (flags['pref-employment-types'])
-      preferences.employmentTypes = splitCsv(flags['pref-employment-types']);
-    if (flags['pref-companies']) preferences.companies = splitCsv(flags['pref-companies']);
+      preferences.employmentTypes = splitListFlag(flags['pref-employment-types']);
+    if (flags['pref-companies']) preferences.companies = splitListFlag(flags['pref-companies']);
     if (flags['pref-remote']) preferences.remote = true;
     if (flags['pref-easy-apply']) preferences.easyApply = true;
     if (flags['pref-under-10-applicants']) preferences.under10Applicants = true;
     if (flags['pref-in-your-network']) preferences.inYourNetwork = true;
-    if (flags['pref-keywords']) preferences.keywords = splitCsv(flags['pref-keywords']);
+    if (flags['pref-keywords']) preferences.keywords = splitListFlag(flags['pref-keywords']);
 
     if (Object.keys(filter).length > 0 && Object.keys(preferences).length > 0) {
       this.error(
@@ -180,8 +186,4 @@ export default class JobsSearch extends BaseCommand {
       this.handleError(error);
     }
   }
-}
-
-function splitCsv(value: string): Array<string> {
-  return value.split(',').map((s) => s.trim());
 }
