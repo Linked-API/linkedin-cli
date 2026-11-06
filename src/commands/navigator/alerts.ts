@@ -1,8 +1,11 @@
 import { BaseCommand } from '@base-command';
+import { EXIT_CODE } from '@core/errors/exit-codes';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
 import type { TNvRetrieveAlertsParams } from '@linkedapi/node';
 import { Flags } from '@oclif/core';
+import { isNvAlertSubject } from '@utils/is-nv-alert-subject';
+import { splitListFlag } from '@utils/split-list-flag';
 
 export default class NavigatorAlerts extends BaseCommand {
   static override readonly description =
@@ -26,7 +29,17 @@ export default class NavigatorAlerts extends BaseCommand {
       options: ['lead', 'account'],
     }),
     types: Flags.string({
-      description: 'Exact machine codes, comma-separated; empty means unrestricted',
+      description:
+        'Exact machine codes (comma-separated or a JSON array); empty means unrestricted',
+    }),
+    'list-id': Flags.string({
+      description: 'Owned list ID; requires latest sorting',
+    }),
+    subject: Flags.string({
+      description:
+        'Recognised hashed URL or Sales Navigator subject URN; repeat once per subject, never use a comma list or JSON array',
+      multiple: true,
+      multipleNonGreedy: true,
     }),
     since: Flags.string({ description: 'Inclusive ISO timestamp cutoff' }),
     'exclude-suggested': Flags.boolean({
@@ -55,16 +68,24 @@ export default class NavigatorAlerts extends BaseCommand {
       json,
       fields,
     } = flags;
+    if (flags.subject?.some((subject): boolean => !isNvAlertSubject(subject))) {
+      this.error(
+        'Each --subject must be one recognised hashed LinkedIn URL or Sales Navigator subject URN. Repeat --subject for multiple identities; do not use a JSON array or comma-separated list.',
+        { exit: EXIT_CODE.VALIDATION },
+      );
+    }
+    if (flags['list-id'] && sort === 'relevance') {
+      this.error('--list-id requires --sort latest.', { exit: EXIT_CODE.VALIDATION });
+    }
     const client = await this.buildAuthenticatedClient();
     const params = {
       limit,
       sort: sort as TNvRetrieveAlertsParams['sort'],
       filter: {
         category: category as 'lead' | 'account' | undefined,
-        types: types
-          ?.split(',')
-          .map((type): string => type.trim())
-          .filter(Boolean),
+        listId: flags['list-id'],
+        subjects: flags.subject,
+        types: types === undefined ? undefined : splitListFlag(types).filter(Boolean),
         since,
         excludeSuggested,
       },

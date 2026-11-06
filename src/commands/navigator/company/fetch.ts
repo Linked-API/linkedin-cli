@@ -1,8 +1,7 @@
-import { Args, Flags } from '@oclif/core';
-
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { Args, Flags } from '@oclif/core';
 import { splitListFlag } from '@utils/split-list-flag';
 
 export default class NavigatorCompanyFetch extends BaseCommand {
@@ -10,7 +9,7 @@ export default class NavigatorCompanyFetch extends BaseCommand {
 
   static override args = {
     'hashed-url': Args.string({
-      description: 'Hashed LinkedIn company URL',
+      description: 'Public or hashed LinkedIn company URL (/company/... or /sales/company/...)',
       required: true,
     }),
   };

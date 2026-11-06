@@ -1,15 +1,14 @@
-import { Args } from '@oclif/core';
-
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
 import { runWorkflow } from '@core/workflow/workflow-runner';
+import { Args } from '@oclif/core';
 
 export default class NavigatorPersonFetch extends BaseCommand {
   static override description = 'Fetch a person profile via Sales Navigator';
 
   static override args = {
     'hashed-url': Args.string({
-      description: 'Hashed LinkedIn profile URL',
+      description: 'Public or hashed LinkedIn person URL (/in/... or /sales/lead/...)',
       required: true,
     }),
   };
