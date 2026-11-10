@@ -5,7 +5,7 @@ import { Args, Flags } from '@oclif/core';
 
 export default class NavigatorCompanyRemoveFromList extends BaseCommand {
   static override readonly description =
-    'Remove an account from exactly one owned custom list, keeping it saved even after its last list. Repeating an absent membership succeeds. English interface only.' as const;
+    'Remove an account from exactly one owned custom list, keeping it saved even after its last list. Repeating an absent membership succeeds.' as const;
   static override readonly args = {
     url: Args.string({
       required: true,

@@ -5,7 +5,7 @@ import { Args } from '@oclif/core';
 
 export default class NavigatorSavedSearchesDelete extends BaseCommand {
   static override readonly description =
-    'Delete an owned saved search by its string ID. An absent search returns savedSearchNotFound. English interface only.' as const;
+    'Delete an owned saved search by its string ID. An absent search returns savedSearchNotFound.' as const;
   static override readonly args = {
     'saved-search-id': Args.string({
       required: true,

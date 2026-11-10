@@ -5,7 +5,7 @@ import { Args, Flags } from '@oclif/core';
 
 export default class NavigatorListsRename extends BaseCommand {
   static override readonly description =
-    'Rename an owned custom list. Trimmed name: 1–75 characters, no line breaks. Same name succeeds; duplicates return listAlreadyExists and system lists return listNotRenamable. English interface only.' as const;
+    'Rename an owned custom list. Trimmed name: 1–75 characters, no line breaks. Same name succeeds; duplicates return listAlreadyExists and system lists return listNotRenamable.' as const;
   static override readonly args = {
     'list-id': Args.string({
       required: true,

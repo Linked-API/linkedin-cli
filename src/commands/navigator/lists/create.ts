@@ -5,7 +5,7 @@ import { Flags } from '@oclif/core';
 
 export default class NavigatorListsCreate extends BaseCommand {
   static override readonly description =
-    'Create an owned Sales Navigator lead or account list (Plus required). Name is trimmed (1–75 characters). Optional description has surrounding spaces trimmed, allows up to 350 characters after trimming, and is omitted when blank. Same-type names equal after trimming, case-sensitive, including system lists, return listAlreadyExists and create nothing. Returns id (string), name, type and url. English interface only.' as const;
+    'Create an owned Sales Navigator lead or account list (Plus required). Name is trimmed (1–75 characters). Optional description has surrounding spaces trimmed, allows up to 350 characters after trimming, and is omitted when blank. Same-type names equal after trimming, case-sensitive, including system lists, return listAlreadyExists and create nothing. Returns id (string), name, type and url.' as const;
 
   static override readonly flags = {
     ...BaseCommand.baseFlags,

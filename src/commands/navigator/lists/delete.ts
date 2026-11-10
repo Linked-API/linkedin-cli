@@ -5,7 +5,7 @@ import { Args } from '@oclif/core';
 
 export default class NavigatorListsDelete extends BaseCommand {
   static override readonly description =
-    'Delete one owned Sales Navigator list by string ID (Plus required), keeping members saved and in their other lists. Unknown, shared or already-deleted IDs return listNotFound; system lists without Delete return listNotDeletable. Success has no result data. English interface only.' as const;
+    'Delete one owned Sales Navigator list by string ID (Plus required), keeping members saved and in their other lists. Unknown, shared or already-deleted IDs return listNotFound; system lists without Delete return listNotDeletable. Success has no result data.' as const;
 
   static override readonly args = {
     'list-id': Args.string({

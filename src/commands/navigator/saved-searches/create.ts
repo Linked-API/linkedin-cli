@@ -5,7 +5,7 @@ import { Args, Flags } from '@oclif/core';
 
 export default class NavigatorSavedSearchesCreate extends BaseCommand {
   static override readonly description =
-    'Save a Sales Navigator search URL matching the requested type. Returns its id, name, type and URL. English interface only.' as const;
+    'Save a Sales Navigator search URL matching the requested type, optionally under a name. Returns its id, name, type and URL. A name already used by a saved search of the same type returns savedSearchAlreadyExists.' as const;
   static override readonly args = {
     'search-url': Args.string({
       required: true,
@@ -20,6 +20,10 @@ export default class NavigatorSavedSearchesCreate extends BaseCommand {
       options: ['lead', 'account'],
       required: true,
     }),
+    name: Flags.string({
+      description:
+        'Optional name; trimmed, single line, 1–256 characters, unique among saved searches of the same type',
+    }),
   };
 
   public async run(): Promise<void> {
@@ -31,6 +35,7 @@ export default class NavigatorSavedSearchesCreate extends BaseCommand {
         {
           type: flags['type'] as 'lead' | 'account',
           customSearchUrl: args['search-url'],
+          ...(flags.name === undefined ? {} : { name: flags.name }),
         },
         { isQuiet: flags.quiet },
       );
