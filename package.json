@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.2.26",
+  "version": "1.3.0",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@linkedapi/node": "^2.3.23",
+    "@linkedapi/node": "^2.4.0",
     "@oclif/core": "^4.2.10"
   },
   "devDependencies": {
@@ -111,6 +111,18 @@
       },
       "navigator:message": {
         "description": "Sales Navigator messaging"
+      },
+      "recruiter": {
+        "description": "Recruiter Lite operations"
+      },
+      "recruiter:person": {
+        "description": "Recruiter Lite person operations"
+      },
+      "recruiter:projects": {
+        "description": "Recruiter Lite projects"
+      },
+      "recruiter:message": {
+        "description": "Recruiter Lite messaging"
       },
       "workflow": {
         "description": "Execute custom workflows"

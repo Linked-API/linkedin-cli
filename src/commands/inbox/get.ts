@@ -1,7 +1,6 @@
-import { Flags } from '@oclif/core';
-
 import { BaseCommand } from '@base-command';
 import { formatOutput } from '@core/output/formatter';
+import { Flags } from '@oclif/core';
 
 export default class InboxGet extends BaseCommand {
   static override description =
@@ -14,14 +13,14 @@ export default class InboxGet extends BaseCommand {
     }),
     type: Flags.string({
       description: 'Filter by inbox type',
-      options: ['st', 'nv'],
+      options: ['st', 'nv', 'rc'],
     }),
     'thread-id': Flags.string({
       description: 'Restrict to a single conversation thread',
     }),
     person: Flags.string({
       description:
-        "LinkedIn profile URL: return the whole known conversation with this person, including history loaded by 'message get'. A hashed URL always matches; a public URL only once Linked API knows it",
+        "LinkedIn or Recruiter profile URL (/talent/profile/…): return the whole known conversation with this person, including history loaded by 'message get'. A hashed URL always matches; a public URL only once Linked API knows it",
     }),
   };
 
@@ -43,7 +42,7 @@ export default class InboxGet extends BaseCommand {
 
       const result = await client.pollInbox({
         since: flags.since,
-        type: flags.type as 'st' | 'nv' | undefined,
+        type: flags.type as 'st' | 'nv' | 'rc' | undefined,
         threadId: flags['thread-id'],
         personUrl: flags.person,
       });

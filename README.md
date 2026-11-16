@@ -307,7 +307,10 @@ Enable whole-inbox monitoring for the account. This is the recommended first ste
 ```bash
 linkedin inbox sync         # standard inbox
 linkedin inbox sync --nv    # Sales Navigator inbox
+linkedin inbox sync --rc    # Recruiter Lite inbox
 ```
+
+`--nv` and `--rc` cannot be combined.
 
 #### `inbox get`
 
@@ -320,15 +323,18 @@ linkedin inbox get [flags]
 | Flag | Type | Description |
 |------|------|-------------|
 | `--since` | string | Only retrieve messages at or after this ISO timestamp |
-| `--type` | string | Filter by inbox type: `st` or `nv` (default: both) |
+| `--type` | string | Filter by inbox type: `st`, `nv` or `rc` (default: all) |
 | `--thread-id` | string | Restrict to a single conversation thread |
-| `--person` | string | LinkedIn profile URL. Return the whole known conversation with this person, including history loaded by `message get`. A hashed URL always matches; a public URL only once Linked API knows it |
+| `--person` | string | LinkedIn or Recruiter profile URL (`https://www.linkedin.com/talent/profile/…`). Return the whole known conversation with this person, including history loaded by `message get`. A hashed URL always matches; a public URL only once Linked API knows it; a Recruiter profile URL returns the Recruiter Lite conversations |
 
 ```bash
 linkedin inbox get --json
 linkedin inbox get --since 2024-01-15T10:30:00Z --type nv
+linkedin inbox get --type rc --json
 linkedin inbox get --person https://www.linkedin.com/in/vprudnikoff --json
 ```
+
+Recruiter Lite messages carry `personRecruiterUrl`; their `personHashedUrl` and `personUrn` are `null`.
 
 With `--person`, the output carries `threads` next to `messages`: each thread has `threadId` (may be `null`), `type`, `personUrn`, `historyFrom` and `historyComplete`, and each message has `inboxMessageId`. If `historyComplete` is `false` and you need earlier messages, run `message get <person-url>` once.
 
@@ -859,6 +865,192 @@ linkedin navigator message get <person-url> [flags]
 ```bash
 linkedin navigator message get https://www.linkedin.com/in/vprudnikoff
 linkedin navigator message get https://www.linkedin.com/in/vprudnikoff --since 2024-01-15T10:30:00Z
+```
+
+---
+
+### Recruiter Lite
+
+Requires a LinkedIn Recruiter Lite seat on the account and Linked API's Plus plan. Keep only one Recruiter session
+open for the account. Person arguments are Recruiter profile URLs (`https://www.linkedin.com/talent/profile/…`), such
+as `recruiterProfileUrl` from a search; public `/in/…` URLs are not accepted. Project IDs are strings of digits. To
+read Recruiter Lite messages, run `linkedin inbox sync --rc` once, then `linkedin inbox get --type rc`.
+
+#### `recruiter person search`
+
+Search candidates with a term, Advanced Search filters, or a Recruiter search URL.
+
+```bash
+linkedin recruiter person search [flags]
+```
+
+Give `--term`, at least one filter, or `--url`. Filters alone are accepted. `--url` cannot be combined with `--term`
+or any filter. A scope flag or a `--no-…` flag alone is not a search criterion.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--term` | string | Search keyword or phrase |
+| `--url` | string | Recruiter search URL; cannot be combined with `--term` or filters |
+| `--limit` | integer | Max results to return, 1–1000 (default: 25) |
+| `--job-titles` | string | Job titles, comma-separated |
+| `--job-titles-scope` | string | `currentOrPast`, `current`, `pastNotCurrent` or `past` |
+| `--locations` | string | Locations, comma-separated |
+| `--locations-scope` | string | `current`, `currentOrOpenToRelocate` or `openToRelocateOnly` |
+| `--postal-code` | string | Postal code |
+| `--postal-code-radius-miles` | integer | `1`, `5`, `10`, `25`, `50`, `100` or `200`; requires `--postal-code` |
+| `--skills` | string | Skills, comma-separated |
+| `--[no-]has-passed-skill-assessment` | boolean | Passed a LinkedIn skill assessment |
+| `--companies` | string | Companies, comma-separated |
+| `--companies-scope` | string | `currentOrPast`, `current`, `pastNotCurrent` or `past` |
+| `--current-companies` | string | Current companies, comma-separated |
+| `--past-companies` | string | Past companies, comma-separated |
+| `--company-sizes` | string | Comma-separated: `selfEmployed`, `1-10`, `11-50`, `51-200`, `201-500`, `501-1000`, `1001-5000`, `5001-10000`, `10001+` |
+| `--schools` | string | Schools, comma-separated |
+| `--graduation-years-from`, `--graduation-years-to` | integer | Graduation year range, 1900–2100; either bound or both |
+| `--industries` | string | Industries, comma-separated |
+| `--job-functions` | string | Job functions, comma-separated, such as `Engineering` or `Human Resources` (see `--help` for the full list) |
+| `--seniority` | string | Comma-separated: `unpaid`, `training`, `entry`, `senior`, `manager`, `director`, `vp`, `cxo`, `partner`, `owner` |
+| `--years-of-experience-from`, `--years-of-experience-to` | integer | Years of experience range, 0–30; either bound or both |
+| `--first-names`, `--last-names` | string | Names, comma-separated |
+| `--profile-languages` | string | LinkedIn language codes, comma-separated, such as `en`, `es`, `in` (Indonesian) or `_o` (Other) |
+| `--recently-joined` | string | Comma-separated: `1day`, `2to7days`, `8to14days`, `15to30days`, `1to3months` |
+| `--network-relationships` | string | Comma-separated: `1st`, `2nd`, `groupMembers`, `3rd+` |
+| `--[no-]is-military-veteran` | boolean | Military veterans |
+| `--groups` | string | Groups, comma-separated |
+| `--recruiting-activity-type` | string | `messages`, `notes`, `projects`, `resumes` or `reviews` |
+| `--recruiting-activity-period` | string | `anytime`, `pastDay`, `pastWeek`, `pastTwoWeeks`, `pastThreeMonths`, `pastSixMonths`, `pastYear` or `pastTwoYears`; requires `--recruiting-activity-type` |
+| `--projects` | string | Project names, comma-separated |
+| `--notes` | string | Note text, comma-separated |
+| `--[no-]hide-previously-viewed` | boolean | Leave out candidates the seat has already viewed |
+
+List flags take comma-separated values, or a JSON array when a value contains a comma; give each list flag once.
+A `--no-…` flag turns the checkbox off; it is not an inverse filter.
+
+```bash
+linkedin recruiter person search --term "kubernetes" --job-titles "Backend Engineer" --locations '["Berlin, Germany"]' --json
+linkedin recruiter person search --job-titles "Data Engineer" --years-of-experience-from 3 --seniority "senior,manager"
+linkedin recruiter person search --url "https://www.linkedin.com/talent/search?searchContextId=..."
+```
+
+#### `recruiter person fetch`
+
+Fetch a Recruiter profile.
+
+```bash
+linkedin recruiter person fetch <url> [flags]
+```
+
+| Arg | Required | Description |
+|-----|----------|-------------|
+| `url` | yes | Recruiter profile URL |
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--[no-]basic-info` | boolean | Read the candidate's details (default: on) |
+| `--[no-]recruiting-activity` | boolean | Read the seat's recruiting activity counts (default: off) |
+
+```bash
+linkedin recruiter person fetch https://www.linkedin.com/talent/profile/AEMAAB0x... --recruiting-activity --json
+```
+
+#### `recruiter person save`
+
+Save a candidate to one of your projects. The result says `alreadyInProject`; saving again is safe.
+
+```bash
+linkedin recruiter person save <url> --project-id <id>
+```
+
+| Arg | Required | Description |
+|-----|----------|-------------|
+| `url` | yes | Recruiter profile URL |
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--project-id` | string | yes | Project ID, from `recruiter projects` |
+
+#### `recruiter projects`
+
+List your active projects with `projectId`, `name`, `createdAt`, `candidateCount` and `projectUrl`.
+
+```bash
+linkedin recruiter projects [--limit <1-1000>]
+```
+
+#### `recruiter projects candidates`
+
+List a project's candidates, from every stage or one.
+
+```bash
+linkedin recruiter projects candidates <project-id> [flags]
+```
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--stage` | string | `uncontacted`, `contacted`, `replied` or `archived`; omit for every stage |
+| `--limit` | integer | Max candidates to return, 1–1000 (default: 25) |
+
+#### `recruiter projects create`
+
+Create a private project. Creation is not idempotent: after a failure, check your projects before creating again (a
+duplicate can only be archived).
+
+```bash
+linkedin recruiter projects create --name <name>
+```
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | string | yes | Project name, 1–100 characters, one line |
+
+#### `recruiter projects rename`
+
+Rename a project and, optionally, change its description.
+
+```bash
+linkedin recruiter projects rename <project-id> --name <name> [--description <text>]
+```
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--name` | string | yes | New name, 1–100 characters, one line |
+| `--description` | string | no | Up to 2000 characters; omit to leave it unchanged |
+
+#### `recruiter projects archive`
+
+Archive a project; Recruiter Lite cannot delete one. The result says `alreadyArchived`; archiving again is safe.
+
+```bash
+linkedin recruiter projects archive <project-id>
+```
+
+#### `recruiter message send`
+
+Send a new InMail to a candidate, or reply in an existing Recruiter conversation.
+
+```bash
+linkedin recruiter message send <person-url> <text> --subject <subject>
+linkedin recruiter message send --thread-id <thread-id> <text>
+```
+
+| Arg | Required | Description |
+|-----|----------|-------------|
+| `person-url` | yes, unless `--thread-id` is given | Recruiter profile URL |
+| `text` | yes | Message text, 1–1900 characters |
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--subject` | string | yes, unless `--thread-id` is given | Subject, 1–200 characters, one line; not allowed with `--thread-id` |
+| `--thread-id` | string | no | Reply in this conversation instead of sending a new InMail |
+| `--allow-paid-credit` | boolean | no | Allow spending a paid InMail credit (default: off) |
+
+A paid InMail credit is spent only with `--allow-paid-credit`. Pass it only when the user has explicitly approved
+spending a paid credit on this message; on `inMailCreditRequired`, ask the user instead of retrying with it. A send is
+never retried automatically: after an `unexpectedError`, check the conversation before sending again.
+
+```bash
+linkedin recruiter message send https://www.linkedin.com/talent/profile/AEMAAB0x... "Hi Jane, would you be open to a short call?" --subject "Data Engineer role"
+linkedin recruiter message send --thread-id "2-abc123..." "Thanks! Does Thursday work?"
 ```
 
 ---
