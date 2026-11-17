@@ -68,6 +68,9 @@ export function mapLinkedApiErrorToCliError(error: LinkedApiError): TCliError {
     case 'sessionNotFound':
     case 'noAvailableSeats':
     case 'dailyConnectionAttemptsExceeded':
+    case 'signalNotFound':
+    case 'signalLimitReached':
+    case 'signalStopped':
       return {
         exitCode: EXIT_CODE.VALIDATION,
         error: error.type,

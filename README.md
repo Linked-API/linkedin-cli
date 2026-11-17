@@ -649,6 +649,63 @@ linkedin post comment https://www.linkedin.com/posts/vprudnikoff_activity-123 "W
 
 ---
 
+### Signals
+
+A signal makes the account check one thing on LinkedIn on a schedule and record every new item it finds as an event. See [Signals](https://linkedapi.io/docs/signals-overview) for what each type reports and what its checks spend.
+
+#### `signal create`
+
+Create a signal. Creating a signal that already exists on the account returns it instead of a second one.
+
+```bash
+linkedin signal create --type <type> [flags]
+```
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--type` | string | **Required.** `network`, `profileViewers`, `personPosts`, `companyPosts`, `postSearch` or `postEngagement` |
+| `--label` | string | Your own identifier, up to 64 characters, returned with the signal and its events |
+| `--person-url` | string | `personPosts`: LinkedIn profile URL |
+| `--company-url` | string | `companyPosts`: LinkedIn company page URL |
+| `--post-url` | string | `postEngagement`: the post to watch |
+| `--my-posts` | boolean | `postEngagement`: watch the account's own posts |
+| `--term` | string | `postSearch`: phrase to search, up to 50 characters; repeat for up to 3 phrases |
+| `--content-type`, `--posted-by`, `--mentioning-members`, `--mentioning-companies`, `--author-companies`, `--author-industries` | string | `postSearch` filters, in the same form as in `post search` |
+
+```bash
+linkedin signal create --type network --json
+linkedin signal create --type personPosts --person-url https://www.linkedin.com/in/vprudnikoff --label lead-1042 --json
+linkedin signal create --type postSearch --term "user onboarding" --term "time to value" --json
+linkedin signal create --type postEngagement --my-posts --json
+```
+
+#### `signal list`, `signal get`, `signal pause`, `signal resume`, `signal delete`
+
+```bash
+linkedin signal list [--type <type>] [--status active|paused|stopped]
+linkedin signal get <id>
+linkedin signal pause <id>     # not checked and spends nothing until resumed
+linkedin signal resume <id>    # the first check reports what appeared while paused
+linkedin signal delete <id>    # its events stay available for 90 days
+```
+
+#### `signal events`
+
+Get the events signals detected, newest first. Always pass `--since` with the `detectedAt` of the newest event you already have, and process each event once by its `id`: without `--since` every retained event is returned.
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--since` | string | Only events detected after this ISO timestamp |
+| `--signal-id` | string | Only events of this signal |
+| `--signal-type` | string | Only events of signals of this type |
+| `--event-type` | string | Only events of this type, such as `postPublished` or `commentAdded` |
+
+```bash
+linkedin signal events --since 2026-10-12T16:40:00.000Z --json -q
+```
+
+---
+
 ### Statistics
 
 #### `stats ssi`

@@ -1,6 +1,6 @@
 {
   "name": "@linkedapi/linkedin-cli",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "AI-agent-friendly CLI for controlling LinkedIn accounts and retrieving real-time data.",
   "author": "Linked API",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "ai-agent"
   ],
   "dependencies": {
-    "@linkedapi/node": "^2.4.0",
+    "@linkedapi/node": "^2.5.0",
     "@oclif/core": "^4.2.10"
   },
   "devDependencies": {
@@ -93,6 +93,9 @@
       },
       "post": {
         "description": "Manage LinkedIn posts"
+      },
+      "signal": {
+        "description": "Watch LinkedIn for new posts, comments, reactions, profile views and connection changes"
       },
       "comment": {
         "description": "React to and reply to LinkedIn comments"
