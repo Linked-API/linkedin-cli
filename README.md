@@ -663,7 +663,7 @@ linkedin signal create --type <type> [flags]
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--type` | string | **Required.** `network`, `profileViewers`, `personPosts`, `companyPosts`, `postSearch` or `postEngagement` |
+| `--type` | string | **Required.** `network`, `profileViewers`, `personPosts`, `companyPosts`, `postSearch`, `postEngagement` or `listAlerts` |
 | `--label` | string | Your own identifier, up to 64 characters, returned with the signal and its events |
 | `--person-url` | string | `personPosts`: LinkedIn profile URL |
 | `--company-url` | string | `companyPosts`: LinkedIn company page URL |
@@ -671,13 +671,17 @@ linkedin signal create --type <type> [flags]
 | `--my-posts` | boolean | `postEngagement`: watch the account's own posts |
 | `--term` | string | `postSearch`: phrase to search, up to 50 characters; repeat for up to 3 phrases |
 | `--content-type`, `--posted-by`, `--mentioning-members`, `--mentioning-companies`, `--author-companies`, `--author-industries` | string | `postSearch` filters, in the same form as in `post search` |
+| `--list-id` | string | `listAlerts`: ID of one of the account's own Sales Navigator lists, as `navigator lists` returns it |
 
 ```bash
 linkedin signal create --type network --json
 linkedin signal create --type personPosts --person-url https://www.linkedin.com/in/vprudnikoff --label lead-1042 --json
 linkedin signal create --type postSearch --term "user onboarding" --term "time to value" --json
 linkedin signal create --type postEngagement --my-posts --json
+linkedin signal create --type listAlerts --list-id <list-id> --json
 ```
+
+A `listAlerts` signal reports the alerts Sales Navigator raises about the members of the list. Each `alertPublished` event carries the alert as `navigator alerts` returns it, plus `subjectUrn` and `subjectHashedUrl`, the lead's or account's `urn` and `hashedUrl` as `navigator lists leads` and `navigator lists accounts` return them. It needs an active Sales Navigator subscription; very large lists are not supported yet.
 
 #### `signal list`, `signal get`, `signal pause`, `signal resume`, `signal delete`
 
@@ -772,6 +776,13 @@ machine codes, including future codes; an empty list imposes no restriction.
 unknown saved state are included by default. `--exclude-suggested` returns only
 subjects confirmed as saved. Saved-search and shared-list system notifications
 are excluded.
+
+`--subject` is repeatable, one identity per occurrence: a hashed LinkedIn URL, a
+Sales Navigator subject URN, or `urn:li:member:<id>` / `urn:li:organization:<id>`
+as `navigator lists leads` and `navigator lists accounts` return it in `urn`.
+Subjects are ORed. `--list-id` requires `--sort latest`. To receive a list's new
+alerts as they appear, create a `listAlerts` signal (`signal create --type
+listAlerts --list-id <list-id>`).
 
 The result array contains `id`, `type`, `publishedAt`, `subject` (`type`, `urn`,
 nullable `name`, `url`, nullable `saved`), plus nullable `headline`, `text`,

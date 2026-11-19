@@ -37,7 +37,7 @@ export default class NavigatorAlerts extends BaseCommand {
     }),
     subject: Flags.string({
       description:
-        'Recognised hashed URL or Sales Navigator subject URN; repeat once per subject, never use a comma list or JSON array',
+        "Recognised hashed URL, Sales Navigator subject URN, or urn:li:member:<id> / urn:li:organization:<id> as 'navigator lists leads' and 'navigator lists accounts' return it; repeat once per subject, never use a comma list or JSON array",
       multiple: true,
       multipleNonGreedy: true,
     }),
@@ -70,7 +70,7 @@ export default class NavigatorAlerts extends BaseCommand {
     } = flags;
     if (flags.subject?.some((subject): boolean => !isNvAlertSubject(subject))) {
       this.error(
-        'Each --subject must be one recognised hashed LinkedIn URL or Sales Navigator subject URN. Repeat --subject for multiple identities; do not use a JSON array or comma-separated list.',
+        'Each --subject must be one recognised hashed LinkedIn URL, Sales Navigator subject URN, or urn:li:member:<id> / urn:li:organization:<id>. Repeat --subject for multiple identities; do not use a JSON array or comma-separated list.',
         { exit: EXIT_CODE.VALIDATION },
       );
     }

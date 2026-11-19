@@ -14,9 +14,11 @@ import { splitListFlag } from '@utils/split-list-flag';
 export default class SignalCreate extends BaseCommand {
   static override description = `Create a signal: the account checks one thing on LinkedIn on a schedule and records every new item as an event, read with 'signal events'.
 
-Target flags by type: network and profileViewers take none; personPosts takes --person-url; companyPosts takes --company-url; postSearch takes --term (1 to 3) and optional filter flags; postEngagement takes --post-url or --my-posts.
+Target flags by type: network and profileViewers take none; personPosts takes --person-url; companyPosts takes --company-url; postSearch takes --term (1 to 3) and optional filter flags; postEngagement takes --post-url or --my-posts; listAlerts takes --list-id.
 
-What checks spend: network and profileViewers spend nothing from account limits. postSearch spends 1 of stSearchQueries per check (30 to 60 of the default 300 a month per signal), so put the wordings of one topic into one signal. personPosts and companyPosts open the profile or company page once on the first check, then spend a few stSearchQueries a day for the whole account and occasional visits. postEngagement spends nothing apart from occasional visits.
+listAlerts watches one of the account's own Sales Navigator lists and reports the alerts Sales Navigator raises about its members, with each lead's or account's urn and hashedUrl as 'navigator lists leads' and 'navigator lists accounts' return them. It needs an active Sales Navigator subscription; very large lists are not supported yet.
+
+What checks spend: network, profileViewers and listAlerts spend nothing from account limits. postSearch spends 1 of stSearchQueries per check (30 to 60 of the default 300 a month per signal), so put the wordings of one topic into one signal. personPosts and companyPosts open the profile or company page once on the first check, then spend a few stSearchQueries a day for the whole account and occasional visits. postEngagement spends nothing apart from occasional visits.
 
 Creating a signal that already exists on the account returns it instead of a second one.
 
@@ -45,6 +47,10 @@ See https://linkedapi.io/docs/managing-signals/ for details.`;
     'my-posts': Flags.boolean({
       description: "postEngagement: watch comments and reactions on the account's own posts",
       default: false,
+    }),
+    'list-id': Flags.string({
+      description:
+        "listAlerts: ID of one of the account's own Sales Navigator lists, as 'navigator lists' returns it",
     }),
     term: Flags.string({
       description:
@@ -82,6 +88,7 @@ See https://linkedapi.io/docs/managing-signals/ for details.`;
     '<%= config.bin %> signal create --type personPosts --person-url https://www.linkedin.com/in/john-doe --label lead-1042 --json',
     '<%= config.bin %> signal create --type postSearch --term "user onboarding" --term "time to value" --author-industries "Software Development" --json',
     '<%= config.bin %> signal create --type postEngagement --my-posts --json',
+    '<%= config.bin %> signal create --type listAlerts --list-id 1234567890123456789 --json',
   ];
 
   public async run(): Promise<void> {
@@ -127,6 +134,7 @@ See https://linkedapi.io/docs/managing-signals/ for details.`;
       myPosts: flags['my-posts'] ? (true as const) : undefined,
       term: flags.term,
       filter: Object.keys(filter).length > 0 ? filter : undefined,
+      listId: flags['list-id'],
     };
 
     const client = await this.buildAuthenticatedClient();

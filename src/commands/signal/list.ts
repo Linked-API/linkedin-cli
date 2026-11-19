@@ -7,7 +7,7 @@ import { formatOutput } from '@core/output/formatter';
 export default class SignalList extends BaseCommand {
   static override description = `List the account's signals with their status, baselineAt, lastCheckedAt and nextCheckAt.
 
-A stopped signal (stoppedReason targetNotFound or watchPeriodEnded) cannot be resumed; delete it and create it again.`;
+A stopped signal (stoppedReason targetNotFound, watchPeriodEnded, noSalesNavigator or listTooLarge) cannot be resumed; delete it and create it again.`;
 
   static override flags = {
     ...BaseCommand.baseFlags,

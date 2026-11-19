@@ -1,6 +1,9 @@
 export function isNvAlertSubject(value: string): boolean {
   if (/^urn:li:fs_salesProfile:\(AC[ow][\w-]+,[^,()]+,[^,()]+\)$/.test(value)) return true;
   if (/^urn:li:fs_salesCompany:[1-9]\d*$/.test(value)) return true;
+  if (/^urn:li:(?:member|organization):[1-9]\d*$/.test(value)) {
+    return true;
+  }
   if (!/^(?:https?:\/\/)?(?:[\w-]+\.)?linkedin\.com\//i.test(value)) return false;
   try {
     const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
